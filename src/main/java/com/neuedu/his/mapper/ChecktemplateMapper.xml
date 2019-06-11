@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.ChecktemplateMapper">
+  
+  <sql id="Base_Column_List">    
+    ID, Name, UserID, CreationTime, Scope, RecordType, DelMark
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">   
+    select 
+    <include refid="Base_Column_List" />
+    from CheckTemplate
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" >
+    delete from CheckTemplate
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">
+    insert into CheckTemplate (ID, Name, UserID, 
+      CreationTime, Scope, RecordType, 
+      DelMark)
+    values (#{ID,jdbcType=INTEGER}, #{Name,jdbcType=VARCHAR}, #{UserID,jdbcType=INTEGER}, 
+      #{CreationTime,jdbcType=TIMESTAMP}, #{Scope,jdbcType=CHAR}, #{RecordType,jdbcType=INTEGER}, 
+      #{DelMark,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">    
+    insert into CheckTemplate
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="Name != null">
+        Name,
+      </if>
+      <if test="UserID != null">
+        UserID,
+      </if>
+      <if test="CreationTime != null">
+        CreationTime,
+      </if>
+      <if test="Scope != null">
+        Scope,
+      </if>
+      <if test="RecordType != null">
+        RecordType,
+      </if>
+      <if test="DelMark != null">
+        DelMark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="Name != null">
+        #{Name,jdbcType=VARCHAR},
+      </if>
+      <if test="UserID != null">
+        #{UserID,jdbcType=INTEGER},
+      </if>
+      <if test="CreationTime != null">
+        #{CreationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="Scope != null">
+        #{Scope,jdbcType=CHAR},
+      </if>
+      <if test="RecordType != null">
+        #{RecordType,jdbcType=INTEGER},
+      </if>
+      <if test="DelMark != null">
+        #{DelMark,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">    
+    update CheckTemplate
+    <set>
+      <if test="Name != null">
+        Name = #{Name,jdbcType=VARCHAR},
+      </if>
+      <if test="UserID != null">
+        UserID = #{UserID,jdbcType=INTEGER},
+      </if>
+      <if test="CreationTime != null">
+        CreationTime = #{CreationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="Scope != null">
+        Scope = #{Scope,jdbcType=CHAR},
+      </if>
+      <if test="RecordType != null">
+        RecordType = #{RecordType,jdbcType=INTEGER},
+      </if>
+      <if test="DelMark != null">
+        DelMark = #{DelMark,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update CheckTemplate
+    set Name = #{Name,jdbcType=VARCHAR},
+      UserID = #{UserID,jdbcType=INTEGER},
+      CreationTime = #{CreationTime,jdbcType=TIMESTAMP},
+      Scope = #{Scope,jdbcType=CHAR},
+      RecordType = #{RecordType,jdbcType=INTEGER},
+      DelMark = #{DelMark,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  
+  <select id="getCheckTemplateList" resultType="java.util.Map" parameterType="java.lang.String" >   
+    select 
+    <include refid="Base_Column_List" />
+    from CheckTemplate 
+    where DelMark=1 
+    	<if test=" keywords01!=null and keywords01!='' ">
+    		AND Name LIKE concat('%',#{keywords01!=},'%')
+    	</if>
+    	<if test=" keywords02!=null and keywords02!='' ">
+    		AND Scope = #{keywords02}
+    	</if>
+    	<if test=" keywords03!=null and keywords03!='' ">
+    		AND RecordType = #{keywords03}
+    	</if>
+  </select>
+  
+  <select id="getTemplateByDoc" resultType="java.util.Map" parameterType="java.lang.String" >   
+    select 
+    <include refid="Base_Column_List" />
+    from CheckTemplate 
+    where DelMark=1 AND ( (Scope=2 OR Scope=3) OR (Scope=1 AND UserID=#{UserID}) )
+    	<if test=" RecordType!=null and RecordType!='' ">
+    		AND RecordType = #{RecordType}
+    	</if>
+    	<if test=" Name!=null and Name!='' ">
+    		AND Name LIKE concat('%',#{Name},'%')
+    	</if>
+  </select>
+</mapper>

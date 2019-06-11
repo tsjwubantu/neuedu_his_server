@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.ConstantitemMapper">
+  
+  <sql id="Base_Column_List">    
+    ID, ConstantTypeID, ConstantCode, ConstantName, DelMark
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from ConstantItem
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" >    
+    delete from ConstantItem
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">
+    insert into ConstantItem (ID, ConstantTypeID, ConstantCode, 
+      ConstantName, DelMark)
+    values (#{ID,jdbcType=INTEGER}, #{constantTypeID,jdbcType=INTEGER}, #{constantCode,jdbcType=VARCHAR}, 
+      #{constantName,jdbcType=VARCHAR}, #{delMark,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">    
+    insert into ConstantItem
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="constantTypeID != null">
+        ConstantTypeID,
+      </if>
+      <if test="constantCode != null">
+        ConstantCode,
+      </if>
+      <if test="constantName != null">
+        ConstantName,
+      </if>
+      <if test="delMark != null">
+        DelMark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="constantTypeID != null">
+        #{constantTypeID,jdbcType=INTEGER},
+      </if>
+      <if test="constantCode != null">
+        #{constantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="constantName != null">
+        #{constantName,jdbcType=VARCHAR},
+      </if>
+      <if test="delMark != null">
+        #{delMark,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">    
+    update ConstantItem
+    <set>
+      <if test="constantTypeID != null">
+        ConstantTypeID = #{constantTypeID,jdbcType=INTEGER},
+      </if>
+      <if test="constantCode != null">
+        ConstantCode = #{constantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="constantName != null">
+        ConstantName = #{constantName,jdbcType=VARCHAR},
+      </if>
+      <if test="delMark != null">
+        DelMark = #{delMark,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update ConstantItem
+    set ConstantTypeID = #{constantTypeID,jdbcType=INTEGER},
+      ConstantCode = #{constantCode,jdbcType=VARCHAR},
+      ConstantName = #{constantName,jdbcType=VARCHAR},
+      DelMark = #{delMark,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 根据常数类别表ConstantType中，常数类别编码ConstantTypeCode，查询符合条件的常数项表ConstantItem的记录，无分页  -->
+  
+  <sql id="Table_Column_List">    
+    i.ID ID, ConstantTypeID, ConstantCode, ConstantName
+  </sql>
+  <select id="getConstantItemListByType" parameterType="java.lang.String" resultType="java.util.Map">    
+    select 
+    <include refid="Table_Column_List" />
+    from ConstantItem i,ConstantType t
+    where i.ConstantTypeID = t.ID
+    	AND t.ConstantTypeCode = #{ConstantTypeCode}
+    	AND i.DelMark = 1
+  </select>
+  
+  <select id="getConstantItem" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from ConstantItem    
+  </select>
+  
+  <!-- gao -->
+  <!--获取常数项内容数据列表的方法  -->
+     <select id="getConstantItemList" resultType="java.util.Map">
+        SELECT a.ConstantCode,a.ConstantName,a.ID,
+        b.ConstantTypeName,a.ConstantTypeID
+        FROM ConstantItem a,ConstantType b
+        WHERE a.ConstantTypeID = b.ID AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+            AND ( ConstantCode LIKE concat('%',#{keywords},'%') 
+        </if>
+        <if test="keywords!=null and keywords!=''">
+            OR ConstantName LIKE concat('%',#{keywords},'%') )
+        </if>
+        
+        <if test="keywords2!=null and keywords2!=''">
+            AND ConstantTypeID =#{keywords2} 
+        </if>
+        ORDER BY id DESC limit #{start},#{count};
+    </select>
+    
+    <!--获取常数项内容数据列表的方法  -->
+    <select id="getConstantItemList2" resultType="java.util.Map">
+        SELECT ID,ConstantName
+        FROM ConstantItem
+        WHERE 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+            AND ConstantTypeID=#{keywords} 
+        </if>
+        ORDER BY ID;
+    </select>
+    
+    <!--获取符合条件的常数项内容数量  -->
+    <select id="getConstantItemCount" resultType="int">
+        SELECT count(*) FROM ConstantItem a,ConstantType b
+        <where>
+            a.ConstantTypeID = b.ID
+        <if test="keywords!=null and keywords!=''">
+            AND ( ConstantCode LIKE concat('%',#{keywords},'%') 
+        </if>
+        <if test="keywords!=null and keywords!=''">
+            OR ConstantName LIKE concat('%',#{keywords},'%') )
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+            AND ConstantTypeID =#{keywords2} 
+        </if>
+        </where>
+    </select>
+    
+    <!--获取符合条件的常数项内容数量  -->
+    <select id="getConstantItemCount2" resultType="int">
+        SELECT count(*) FROM ConstantItem a,ConstantType b
+        <where>
+          a.ConstantTypeID = b.ID
+        <if test="keywords!=null and keywords!=''">
+            AND ConstantTypeID=#{keywords} 
+        </if>
+        </where>
+    </select>
+    
+    <!-- 删除常数项内容的方法，可以批量删除 -->
+    <delete id="deleteConstantItemByIds">
+        DELETE FROM ConstantItem WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <!--更新常量项内容的方法  -->
+    <update id="updateConstantItemById" parameterType="java.util.Map">
+        UPDATE ConstantItem SET ConstantCode=#{ConstantCode},
+        ConstantName=#{ConstantName},
+        ConstantTypeID=#{ConstantTypeID} 
+        WHERE id=#{id}
+    </update>
+    
+    <!--插入常量项内容的方法  -->
+    <insert id="addConstantItem" parameterType="java.util.Map">
+        INSERT INTO ConstantItem SET ConstantCode=#{ConstantCode},
+        ConstantName=#{ConstantName},
+        ConstantTypeID=#{ConstantTypeID}
+    </insert>
+</mapper>

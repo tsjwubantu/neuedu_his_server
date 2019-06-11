@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.SchedulingMapper">
+    <!--按时间段 查排班信息  -->
+    <select id="getSchedulingList" resultType="java.util.Map">
+       SELECT  a.SchedDate,c.DeptName,b.RealName,a.Noon,
+               d.RegistName,d.RegistQuota,a.ID
+        FROM Scheduling a,User b,Department c,RegistLevel d
+        WHERE a.UserID = b.ID AND a.DeptID = c.ID AND b.RegistLeID=d.ID  AND b.IsScheduling='是' AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+            AND ( SchedDate &gt;= #{keywords}
+        </if>
+        
+        <if test="keywords2!=null and keywords2!=''">
+            AND SchedDate &lt;= #{keywords2} )
+        </if>
+        ORDER BY SchedDate DESC limit #{start},#{count};
+    </select>
+    
+    <!--如下开始 6级递进式查询-->
+    <!--1午别   按排班日期(看诊日期)查午别-->
+    <select id="getSchedulingList05" resultType="java.util.Map">
+       SELECT DISTINCT a.Noon
+       FROM Scheduling a
+       WHERE  1=1
+       <if test="keywords!=null and keywords!=''">
+            AND  SchedDate = #{keywords}
+       </if>
+       ORDER BY Noon;
+    </select>
+    
+    <!--2科室   根据日期和午别查科室-->
+    <select id="getSchedulingList03" resultType="java.util.Map">
+       SELECT DISTINCT c.DeptName,a.DeptID
+       FROM Scheduling a,Department c
+       WHERE a.DeptID = c.ID AND  1=1
+        
+        <if test="keywords!=null and keywords!=''">
+            AND  a.SchedDate = #{keywords}
+        </if>
+        
+        <if test="keywords2!=null and keywords2!=''">
+            AND  a.Noon = #{keywords2}
+        </if>
+        ORDER BY DeptID;
+    </select>
+    
+    <!--3号别   根据日期 午别 科室 查号别-->
+    <select id="getSchedulingList04" resultType="java.util.Map">
+       SELECT DISTINCT d.RegistName,d.ID did
+       FROM Scheduling a,RegistLevel d,User b
+       WHERE a.UserID = b.ID AND b.RegistLeID=d.ID AND b.IsScheduling='是' AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+            AND  a.SchedDate = #{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+            AND  a.Noon = #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+            AND  a.DeptID = #{keywords3}
+        </if>
+        ORDER BY did;
+    </select>
+    
+    <!--4医生  根据日期 午别 科室 号别 查医生-->
+    <select id="getSchedulingList02" resultType="java.util.Map">
+       SELECT DISTINCT b.RealName,b.ID
+       FROM Scheduling a,RegistLevel d,User b
+       WHERE a.UserID = b.ID AND b.RegistLeID=d.ID AND b.IsScheduling='是' AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+            AND  a.SchedDate = #{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+            AND  a.Noon = #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+            AND  a.DeptID = #{keywords3}
+        </if>
+        <if test="keywords4!=null and keywords4!=''">
+            AND  d.ID = #{keywords4}
+        </if>
+        ORDER BY b.ID;
+    </select>
+    
+    <!--5查医生的初始挂号额度  按照日期  午别 医生 -->
+    <select id="getSchedulingCount06" resultType="int">
+        SELECT  DISTINCT d.RegistQuota RegistQuota
+        FROM Scheduling a,User b,RegistLevel d
+        WHERE a.UserID = b.ID AND b.RegistLeID=d.Id AND b.IsScheduling='是' AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+              AND SchedDate = #{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+              AND a.Noon = #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+              AND a.UserID = #{keywords3}
+        </if>
+    </select>
+    
+    <!--6查医生的初始挂号费 按照日期  午别 医生 -->
+    <select id="getSchedulingCount07" resultType="float">
+        SELECT  DISTINCT d.RegistFee RegistFee
+        FROM Scheduling a,User b,RegistLevel d
+        WHERE a.UserID = b.ID AND b.RegistLeID=d.ID AND b.IsScheduling='是' AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+              AND a.SchedDate = #{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+              AND a.Noon = #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+              AND a.UserID = #{keywords3}
+        </if>
+    </select>
+    
+    
+    
+    <!--查询医生的挂号级别按照日期  午别 医生 -->
+    <select id="getSchedulingCount08" resultType="int">
+        SELECT  b.RegistId RegistId
+        FROM Scheduling a,User b,RegistLevel d
+        WHERE a.UserId = b.id AND b.RegistId=d.id AND b.IsScheduling='是' AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+              AND SchedDate = #{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+              AND noon = #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+              AND userid = #{keywords3}
+        </if>
+    </select>
+    
+    <!--查询看诊医生的科室  按照日期  午别 医生来查询 -->
+    <select id="getSchedulingCount09" resultType="int">
+        SELECT  a.DeptId DeptId
+        FROM Scheduling a,User b,RegistLevel d
+        WHERE a.UserId = b.id AND b.RegistId=d.id AND b.IsScheduling='是' AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+              AND SchedDate = #{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+              AND noon = #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+              AND userid = #{keywords3}
+        </if>
+    </select>
+    
+    <select id="getSchedulingCount" resultType="int">
+        SELECT count(*) FROM Scheduling
+        <where>
+            
+        <if test="keywords!=null and keywords!=''">
+              SchedDate &gt;= #{keywords}
+        </if>
+        
+        <if test="keywords2!=null and keywords2!=''">
+            AND SchedDate &lt;= #{keywords2} 
+        </if>
+        </where>
+    </select>
+    
+    <select id="getSchedulingCount02" resultType="int">
+        SELECT count(*) FROM Scheduling
+        <where>
+        <if test="keywords!=null and keywords!=''">
+              SchedDate = #{keywords}
+        </if>
+        </where>
+    </select>
+    
+    <!-- old=deleteSchedulingByIds-->
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM Scheduling WHERE ID IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteSchedulingByIds2">
+        UPDATE Scheduling SET DelMark=0 WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteSchedulingByDate">
+        DELETE FROM Scheduling WHERE
+        SchedDate=#{SchedDate} AND UserId=#{UserId} AND Noon=#{Noon}
+    </delete>
+    
+    <update id="updateSchedulingById" parameterType="java.util.Map">
+        UPDATE Scheduling SET SchedDate=#{SchedDate},
+        DeptID=#{DeptId},
+        UserID=#{UserId},
+        Noon=#{Noon},
+        RuleID=#{RuleId}
+        WHERE ID=#{id}
+    </update>
+    
+    <insert id="addScheduling" parameterType="java.util.Map">
+        INSERT INTO Scheduling SET SchedDate=#{SchedDate},
+        DeptID=#{DeptId},
+        UserID=#{UserId},
+        Noon=#{Noon},
+        RuleID=#{RuleId}
+    </insert>
+
+</mapper>

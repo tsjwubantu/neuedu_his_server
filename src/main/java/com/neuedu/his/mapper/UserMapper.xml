@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.UserMapper">
+     <!-- 1 -->
+     <select id="getUserList" resultType="java.util.Map">
+        SELECT a.UserName,a.RealName,a.ID,
+        a.UseType,a.DocTitleID dtid,a.DeptID dpid,a.RegistLeID reid,
+        b.ConstantName,c.DeptName,d.RegistName,a.Password
+        FROM User a,ConstantItem b,Department c,RegistLevel d
+        WHERE a.DocTitleID = b.ID AND a.DeptID=c.ID  AND a.RegistLeId=d.ID  
+        
+        <if test="keywords!=null">
+            AND ( UserName LIKE concat('%',#{keywords},'%')
+        </if>
+        <if test="keywords!=null">
+            OR RealName LIKE concat('%',#{keywords},'%') )
+        </if>
+        ORDER BY id DESC limit #{start},#{count};
+    </select>
+    
+     <!-- 2 新增排班规则时的医生查询-->
+     <select id="getUserList02" resultType="java.util.Map">
+        SELECT a.UserName,a.RealName,a.Id,a.DeptId
+               ,CONCAT(a.UserName,'X10') X10,CONCAT(a.UserName,'X11') X11
+               ,CONCAT(a.UserName,'X20') X20,CONCAT(a.UserName,'X21') X21
+               ,CONCAT(a.UserName,'X30') X30,CONCAT(a.UserName,'X31') X31
+               ,CONCAT(a.UserName,'X40') X40,CONCAT(a.UserName,'X41') X41
+               ,CONCAT(a.UserName,'X50') X50,CONCAT(a.UserName,'X51') X51
+               ,CONCAT(a.UserName,'X60') X60,CONCAT(a.UserName,'X61') X61
+               ,CONCAT(a.UserName,'X70') X70,CONCAT(a.UserName,'X71') X71
+        FROM User a
+        WHERE 1=1
+        
+        <if test="keywords!=null and keywords!='' ">
+            AND  DeptID =#{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!='' ">
+            AND RegistLeID =#{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!='' ">
+            AND UserName LIKE concat('%',#{keywords3},'%') 
+        </if>
+        ORDER BY id DESC limit #{start},#{count};
+    </select>
+    
+    <!-- Count-1 -->
+    <select id="getUserCount" resultType="int">
+        SELECT count(*) FROM User
+        <where>
+        <if test="keywords!=null">
+                AND UserName LIKE concat('%',#{keywords},'%')
+        </if>
+        <if test="keywords!=null">
+                OR RealName LIKE concat('%',#{keywords},'%')
+        </if>
+        </where>
+    </select>
+    
+    <!-- Count-2 -->
+    <select id="getUserCount02" resultType="int">
+        SELECT count(*) FROM User
+        <where>
+        <if test="keywords!=null and keywords!='' ">
+            AND  DeptID =#{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!='' ">
+            AND RegistLeID =#{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!='' ">
+            AND UserName LIKE concat('%',#{keywords3},'%') 
+        </if>
+        </where>
+    </select>
+    
+    <delete id="deleteUserByIds">
+        DELETE FROM User WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteUserByIds2">
+        UPDATE UserSET DelMark=0 WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateUserById" parameterType="java.util.Map">
+        UPDATE User SET UserName=#{UserName},
+        Password=#{Password},
+        RealName=#{RealName},
+        UseType=#{UseType},
+        DocTitleID=#{DocTitleID},
+        IsScheduling=#{IsScheduling},
+        DeptID=#{DeptID},
+        RegistLeID=#{RegistLeID}
+        WHERE ID=#{ID}
+    </update>
+    
+    <insert id="addUser" parameterType="java.util.Map">
+        INSERT INTO User SET UserName=#{UserName},
+        Password=#{Password},
+        RealName=#{RealName},
+        UseType=#{UseType},
+        DocTitleID=#{DocTitleID},
+        IsScheduling=#{IsScheduling},
+        DeptID=#{DeptID},
+        RegistLeID=#{RegistLeID}
+    </insert>
+    
+    <!-- login -->
+    <select id="login" resultType="int"  parameterType="java.util.Map" >
+        SELECT count(*) FROM User
+        <where>
+           1=1
+        <if test="keywords!=null and keywords!='' ">
+            AND  UserName =#{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!='' ">
+            AND  Password =#{keywords2}
+        </if>
+        </where>
+    </select>
+    
+    <!-- 用户名和密码查询 相应的对象 -->
+    <select id="getUserBean" resultType="com.neuedu.his.bean.User">
+        SELECT * FROM User
+        WHERE UserName=#{keywords}  AND  Password =#{keywords2} limit 0,1;
+    </select>
+</mapper>

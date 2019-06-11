@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.InvoiceMapper">
+
+    <!-- 得到符合条件的记录数量==1 -->
+    <select id="getInvoiceCount" resultType="int">
+        SELECT count(*) FROM Invoice
+        <where>
+        <if test="keywords!=null">
+            AND InvoiceNum =#{keywords}
+        </if>
+        </where>
+    </select>
+    
+    <!--发票查询  发票补打使用的==2  a.State=3 -->
+     <select id="getInvoiceList" resultType="java.util.Map">
+        SELECT a.InvoiceNum,b.CaseNumber,b.RealName,a.Money,
+               a.State,b.VisitDate,a.ID
+        FROM Invoice a,Register b
+        WHERE a.RegistID=b.ID AND a.State=#{state}
+        <if test="keywords!=null">
+            AND b.CaseNumber =#{keywords}
+        </if>
+        ORDER BY a.InvoiceNum DESC limit #{start},#{count};
+    </select>
+    
+    <!-- 发票补打使用==3-->
+    <update id="updateState" parameterType="java.util.Map">
+        UPDATE Invoice SET InvoiceNum=#{InvoiceNum},
+        State=#{State}
+        WHERE ID=#{ID}
+    </update>
+    
+    <!-- 发票查询  发票重打使用的 传入 2和 7==4  -->
+    <select id="getInvoiceList02" resultType="java.util.Map">
+        SELECT a.InvoiceNum,b.CaseNumber,b.RealName,a.Money,
+               a.State,b.VisitDate,a.ID,a.UserID,a.RegistID,a.FeeType
+        FROM Invoice a,Register b,SettleCategory e
+        WHERE a.RegistID=b.ID 
+              AND b.SettleID=e.ID AND a.State &lt;&gt; #{state1} AND a.State &lt;&gt; #{state2}
+        <if test="keywords!=null">
+            AND b.CaseNumber =#{keywords}
+        </if>
+        ORDER BY a.InvoiceNum DESC limit #{start},#{count};
+    </select>
+    
+    <!-- 添加发票 -->
+    <insert id="addInvoice" parameterType="java.util.Map">
+        INSERT INTO Invoice SET InvoiceNum=#{InvoiceNum},
+        Money=#{Money},
+        State=#{State},
+        CreationTime=#{CreationTime},
+        UserID=#{RegisterID},
+        RegistID=#{RegistID},
+        FeeType=#{FeeType},
+        Back=#{Back}
+    </insert>
+    
+     <!-- 取发票表的最大ID号 -->
+     <select id="getMaxInvId" resultType="int">
+        SELECT max(ID) FROM Invoice;
+     </select>
+     
+     <!-- 取发票表的最大的发票号  -->
+     <select id="getInvoiceBean" resultType="com.neuedu.his.bean.Invoice">
+        SELECT IF(InvoiceNum='NaN',0,InvoiceNum) InvoiceNum  FROM  Invoice
+        ORDER BY InvoiceNum DESC LIMIT 0,1;
+     </select>
+
+    <!-- 取发票表的最大ID号  发票重打使用的-->
+    <select id="getInvoiceMax" resultType="int">
+        SELECT MAX(ID) FROM Invoice
+    </select>
+</mapper>

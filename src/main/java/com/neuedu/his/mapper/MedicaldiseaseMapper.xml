@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.MedicaldiseaseMapper">
+  
+  <sql id="Base_Column_List">   
+    ID, MedicalID, RegistID, DiseaseID, DiagnoseType, GetSiskDate, DiagnoseCate
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from MedicalDisease
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+    
+  <delete id="deleteByPrimaryKey" >   
+    delete from MedicalDisease
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete> 
+  
+  <insert id="insert" parameterType="java.util.Map">
+    insert into MedicalDisease (ID, MedicalID, RegistID, 
+      DiseaseID, DiagnoseType, GetSiskDate, 
+      DiagnoseCate)
+    values (#{ID,jdbcType=INTEGER}, #{medicalID,jdbcType=INTEGER}, #{registID,jdbcType=INTEGER}, 
+      #{diseaseID,jdbcType=INTEGER}, #{diagnoseType,jdbcType=INTEGER}, #{getSiskDate,jdbcType=TIMESTAMP}, 
+      #{diagnoseCate,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">
+    insert into MedicalDisease
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID!=null and ID!='' ">
+        ID,
+      </if>
+      <if test="MedicalID!=null and MedicalID!=''">
+        MedicalID,
+      </if>
+      <if test="RegistID!=null and RegistID!='' ">
+        RegistID,
+      </if>
+      <if test="DiseaseID!=null and DiseaseID!=''  ">
+        DiseaseID,
+      </if>
+      <if test="DiagnoseType!=null and DiagnoseType!=''  ">
+        DiagnoseType,
+      </if>
+      <if test="GetSiskDate!=null ">
+        GetSiskDate,
+      </if>
+      <if test="DiagnoseCate!=null and DiagnoseCate!='' ">
+        DiagnoseCate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID!=null and ID!='' ">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="MedicalID!=null and MedicalID!='' ">
+        #{MedicalID,jdbcType=INTEGER},
+      </if>
+      <if test="RegistID!=null and RegistID!='' ">
+        #{RegistID,jdbcType=INTEGER},
+      </if>
+      <if test="DiseaseID!=null and DiseaseID!='' ">
+        #{DiseaseID,jdbcType=INTEGER},
+      </if>
+      <if test="DiagnoseType!=null and DiagnoseType!='' ">
+        #{DiagnoseType,jdbcType=INTEGER},
+      </if>
+      <if test="GetSiskDate!=null ">
+        #{GetSiskDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="DiagnoseCate!=null and DiagnoseCate!='' ">
+        #{DiagnoseCate,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+    update MedicalDisease
+    <set>
+      <if test="MedicalID != null">
+        MedicalID = #{MedicalID,jdbcType=INTEGER},
+      </if>
+      <if test="RegistID != null">
+        RegistID = #{RegistID,jdbcType=INTEGER},
+      </if>
+      <if test="DiseaseID != null">
+        DiseaseID = #{DiseaseID,jdbcType=INTEGER},
+      </if>
+      <if test="DiagnoseType != null">
+        DiagnoseType = #{DiagnoseType,jdbcType=INTEGER},
+      </if>
+      <if test="GetSiskDate != null">
+        GetSiskDate = #{GetSiskDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="DiagnoseCate != null">
+        DiagnoseCate = #{DiagnoseCate,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update MedicalDisease
+    set MedicalID = #{MedicalID,jdbcType=INTEGER},
+      RegistID = #{RegistID,jdbcType=INTEGER},
+      DiseaseID = #{DiseaseID,jdbcType=INTEGER},
+      DiagnoseType = #{DiagnoseType,jdbcType=INTEGER},
+      GetSiskDate = #{GetSiskDate,jdbcType=TIMESTAMP},
+      DiagnoseCate = #{DiagnoseCate,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <sql id="Table_Column_List">   
+    m.ID ID, MedicalID, RegistID, DiseaseID, m.DiagnoseType DiagnoseType, m.GetSiskDate GetSiskDate, DiagnoseCate,
+    DiseaseCode,DiseaseName,DiseaseICD,DiseCategoryID
+  </sql>
+  <select id="getMedicalDisease" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Table_Column_List" />
+    from MedicalDisease m , Disease d
+    where m.DiseaseID=d.ID
+    	AND RegistID = #{RegistID}
+    	<if test="DiagnoseCate!=null and DiagnoseCate!='' ">
+    		AND DiagnoseCate=#{DiagnoseCate}
+    	</if>
+  </select>
+  
+  <delete id="deleteByRegistID" >   
+    delete from MedicalDisease
+    where RegistID = #{RegistID}
+    	AND DiagnoseCate = #{DiagnoseCate}
+  </delete>
+</mapper>

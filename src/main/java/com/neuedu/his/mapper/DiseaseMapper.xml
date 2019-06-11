@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.DiseaseMapper">
+  <sql id="Base_Column_List">    
+    ID, DiseaseCode, DiseaseName, DiseaseICD, DiseCategoryID, DelMark
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from Disease
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" >    
+    delete from Disease
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">    
+    insert into Disease (ID, DiseaseCode, DiseaseName, 
+      DiseaseICD, DiseCategoryID, DelMark
+      )
+    values (#{ID,jdbcType=INTEGER}, #{diseaseCode,jdbcType=VARCHAR}, #{diseaseName,jdbcType=VARCHAR}, 
+      #{diseaseICD,jdbcType=VARCHAR}, #{diseCategoryID,jdbcType=INTEGER}, #{delMark,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">   
+    insert into Disease
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="diseaseCode != null">
+        DiseaseCode,
+      </if>
+      <if test="diseaseName != null">
+        DiseaseName,
+      </if>
+      <if test="diseaseICD != null">
+        DiseaseICD,
+      </if>
+      <if test="diseCategoryID != null">
+        DiseCategoryID,
+      </if>
+      <if test="delMark != null">
+        DelMark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="diseaseCode != null">
+        #{diseaseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseName != null">
+        #{diseaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseICD != null">
+        #{diseaseICD,jdbcType=VARCHAR},
+      </if>
+      <if test="diseCategoryID != null">
+        #{diseCategoryID,jdbcType=INTEGER},
+      </if>
+      <if test="delMark != null">
+        #{delMark,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">   
+    update Disease
+    <set>
+      <if test="diseaseCode != null">
+        DiseaseCode = #{diseaseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseName != null">
+        DiseaseName = #{diseaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseICD != null">
+        DiseaseICD = #{diseaseICD,jdbcType=VARCHAR},
+      </if>
+      <if test="diseCategoryID != null">
+        DiseCategoryID = #{diseCategoryID,jdbcType=INTEGER},
+      </if>
+      <if test="delMark != null">
+        DelMark = #{delMark,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">    
+    update Disease
+    set DiseaseCode = #{diseaseCode,jdbcType=VARCHAR},
+      DiseaseName = #{diseaseName,jdbcType=VARCHAR},
+      DiseaseICD = #{diseaseICD,jdbcType=VARCHAR},
+      DiseCategoryID = #{diseCategoryID,jdbcType=INTEGER},
+      DelMark = #{delMark,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <sql id="Table_Column_List">    
+    d.ID ID, DiseaseCode, DiseaseName, DiseaseICD, DiseCategoryID,c.DicaName DicaName
+  </sql>
+  <!-- 分页查询 -->
+  <select id="getDiseaseByType" parameterType="java.lang.String" resultType="java.util.Map">    
+    select 
+    <include refid="Table_Column_List" />
+    from Disease d,DiseCategory c
+    where d.DiseCategoryID = c.ID
+      <if test="DicaType != null and DicaType != ''">
+        AND c.DicaType = #{DicaType}
+      </if>
+     LIMIT #{start},#{count};
+  </select>
+  <select id="getDiseaseByTypeCount" parameterType="java.lang.String" resultType="java.lang.Integer">    
+    select 
+    	count(d.ID)
+    from Disease d,DiseCategory c
+    where d.DiseCategoryID = c.ID
+      <if test="DicaType != null and DicaType != ''">
+        AND c.DicaType = #{DicaType}
+      </if>
+  </select>
+  <!-- 根据疾病名称或ICD查询 -->
+  <select id="getDiseaseByNameOrIcd" resultType="java.util.Map">    
+    select 
+    <include refid="Table_Column_List" />
+    from Disease d,DiseCategory c
+    where d.DiseCategoryID = c.ID
+      <if test="DicaType != null and DicaType != ''">
+        AND c.DicaType = #{DicaType}
+      </if>
+      <if test="keywords01 != null and keywords01 != ''">
+        AND ( DiseaseName LIKE concat('%',#{keywords01},'%')
+        	OR DiseaseICD LIKE concat('%',#{keywords01},'%') )
+      </if>
+  </select>
+  
+  
+  <!-- 高开始 -->
+     <select id="getDiseaseList" resultType="java.util.Map">
+        SELECT a.DiseaseCode,a.DiseaseName,a.DiseaseICD,
+        b.DicaName DicaName,a.ID,a.DiseCategoryID
+        FROM Disease a,DiseCategory b
+        WHERE a.DiseCategoryID = b.ID AND 1=1
+        
+        <if test="keywords!=null">
+            AND (DiseaseCode LIKE concat('%',#{keywords},'%')
+        </if>
+        
+         <if test="keywords!=null">
+            OR DiseaseName LIKE concat('%',#{keywords},'%'))
+        </if>
+        ORDER BY id DESC limit #{start},#{count};
+    </select>
+    
+     <select id="getDiseaseCount" resultType="int">
+        SELECT count(*) FROM Disease
+        <where>
+            
+        <if test="keywords!=null">
+                AND ( DiseaseCode LIKE concat('%',#{keywords},'%')
+        </if>
+        
+        <if test="keywords!=null">
+                OR DiseaseName LIKE concat('%',#{keywords},'%') )
+        </if>
+        </where>
+    </select>
+    
+    <delete id="deleteDiseaseByIds">
+        DELETE FROM Disease WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteDiseaseByIds2">
+        UPDATE Disease SET DelMark=0 WHERE ID IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateDiseaseById" parameterType="java.util.Map">
+        UPDATE Disease SET DiseaseCode=#{DiseaseCode},
+        DiseaseName=#{DiseaseName},
+        DiseaseICD=#{DiseaseICD},
+        DiseCategoryID=#{DiseCategoryID}
+        WHERE ID=#{ID}
+    </update>
+    
+    <insert id="addDisease" parameterType="java.util.Map">
+        INSERT INTO Disease SET DiseaseCode=#{DiseaseCode},
+        DiseaseName=#{DiseaseName},
+        DiseaseICD=#{DiseaseICD},
+        DiseCategoryID=#{DiseCategoryID}
+    </insert>
+</mapper>

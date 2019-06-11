@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.DepartmentMapper">
+      <!-- ,a.DeptCategory ConstantName -->
+     <select id="getDepartmentList" resultType="java.util.Map">
+        SELECT a.DeptCode,a.DeptName,a.DeptType,a.DeptCategoryID,a.ID
+               ,c.ConstantName
+        
+        FROM Department a,ConstantItem c
+        
+        WHERE  a.DeptCategoryID = c.ID AND 1=1
+        
+        <if test="keywords!=null">
+           AND ( DeptCode LIKE concat('%',#{keywords},'%')
+        </if>
+        
+         <if test="keywords!=null">
+            OR DeptName LIKE concat('%',#{keywords},'%') )
+        </if>
+        ORDER BY a.ID  limit #{start},#{count};
+    </select>
+    
+     <select id="getDepartmentCount" resultType="int">
+        SELECT count(*) FROM Department
+        <where>
+            
+        <if test="keywords!=null">
+                AND DeptCode LIKE concat('%',#{keywords},'%')
+        </if>
+        
+        <if test="keywords!=null">
+                OR DeptName LIKE concat('%',#{keywords},'%')
+        </if>
+        </where>
+    </select>
+    
+    <delete id="deleteDepartmentByIds">
+        DELETE FROM Department WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteDepartmentByIds2">
+        UPDATE Department SET DelMark=0 WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateDepartmentById" parameterType="java.util.Map">
+        UPDATE Department SET DeptCode=#{DeptCode},
+        DeptName=#{DeptName},
+        DeptCategoryID=#{DeptCategoryID},
+        DeptType=#{DeptType}
+        WHERE ID=#{ID}
+    </update>
+    
+    <insert id="addDepartment" parameterType="java.util.Map">
+        INSERT INTO Department SET DeptCode=#{DeptCode},
+        DeptName=#{DeptName},
+        DeptCategoryID=#{DeptCategoryID},
+        DeptType=#{DeptType}
+    </insert>
+</mapper>

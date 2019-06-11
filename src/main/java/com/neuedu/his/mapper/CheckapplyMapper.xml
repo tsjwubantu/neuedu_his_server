@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.CheckapplyMapper">
+  
+  <sql id="Base_Column_List">
+    <!--
+      	字段列表
+    -->
+    ID, MedicalID, RegistID, ItemID, Name, Objective, Position, IsUrgent, Num, CreationTime, 
+    DoctorID, CheckOperID, ResultOperID, CheckTime, Result, ResultTime, State, RecordType
+  </sql>  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">
+    <!--
+      	根据ID主键查询数据
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from CheckApply
+    where ID = #{ID}
+  </select>  
+  <delete id="deleteByPrimaryKey">
+    <!--
+     	 根据选择的ID删除，可以多选
+    -->
+    delete from CheckApply
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">
+    <!--
+     	 添加一条记录，不建议使用；
+    -->
+    insert into CheckApply (ID, MedicalID, RegistID, 
+      ItemID, Name, Objective, 
+      Position, IsUrgent, Num, 
+      CreationTime, DoctorID, CheckOperID, 
+      ResultOperID, CheckTime, Result, 
+      ResultTime, State, RecordType
+      )
+    values (#{ID,jdbcType=INTEGER}, #{MedicalID,jdbcType=INTEGER}, #{RegistID,jdbcType=INTEGER}, 
+      #{ItemID,jdbcType=INTEGER}, #{Name,jdbcType=VARCHAR}, #{Objective,jdbcType=VARCHAR}, 
+      #{Position,jdbcType=VARCHAR}, #{IsUrgent,jdbcType=INTEGER}, #{Num,jdbcType=INTEGER}, 
+      #{CreationTime,jdbcType=TIMESTAMP}, #{DoctorID,jdbcType=INTEGER}, #{CheckOperID,jdbcType=INTEGER}, 
+      #{ResultOperID,jdbcType=INTEGER}, #{CheckTime,jdbcType=TIMESTAMP}, #{Result,jdbcType=VARCHAR}, 
+      #{ResultTime,jdbcType=TIMESTAMP}, #{State,jdbcType=INTEGER}, #{RecordType,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="java.util.Map">
+    <!--
+     	 添加一条记录，判断数据为空字段，不进行添加
+    -->
+    insert into CheckApply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">ID,</if>
+      <if test="MedicalID != null">MedicalID,</if>
+      <if test="RegistID != null">RegistID,</if>
+      <if test="ItemID != null">ItemID,</if>
+      <if test="Name != null">Name,</if>
+      <if test="Objective != null">Objective,</if>
+      <if test="Position != null">Position,</if>
+      <if test="IsUrgent != null">IsUrgent,</if>
+      <if test="Num != null">Num,</if>
+      <if test="CreationTime != null">CreationTime,</if>
+      <if test="DoctorID != null">DoctorID,</if>
+      <if test="CheckOperID != null">CheckOperID,</if>
+      <if test="ResultOperID != null">ResultOperID,</if>
+      <if test="CheckTime != null">CheckTime,</if>
+      <if test="Result != null"> Result,</if>
+      <if test="ResultTime != null">ResultTime,</if>
+      <if test="State != null">State,</if>
+      <if test="RecordType != null">RecordType,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="MedicalID != null">
+        #{MedicalID,jdbcType=INTEGER},
+      </if>
+      <if test="RegistID != null">
+        #{RegistID,jdbcType=INTEGER},
+      </if>
+      <if test="ItemID != null">
+        #{ItemID,jdbcType=INTEGER},
+      </if>
+      <if test="Name != null">
+        #{Name,jdbcType=VARCHAR},
+      </if>
+      <if test="Objective != null">
+        #{Objective,jdbcType=VARCHAR},
+      </if>
+      <if test="Position != null">
+        #{Position,jdbcType=VARCHAR},
+      </if>
+      <if test="IsUrgent != null">
+        #{IsUrgent,jdbcType=INTEGER},
+      </if>
+      <if test="Num != null">#{Num},</if>      
+      
+      <if test="CreationTime != null">
+        #{CreationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="DoctorID != null">
+        #{DoctorID,jdbcType=INTEGER},
+      </if>
+      <if test="CheckOperID != null">
+        #{CheckOperID,jdbcType=INTEGER},
+      </if>
+      <if test="ResultOperID != null">
+        #{ResultOperID,jdbcType=INTEGER},
+      </if>
+      <if test="CheckTime != null">
+        #{CheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="Result != null">
+        #{Result,jdbcType=VARCHAR},
+      </if>
+      <if test="ResultTime != null">
+        #{ResultTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="State != null">
+        #{State,jdbcType=INTEGER},
+      </if>
+      <if test="RecordType != null">
+        #{RecordType,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+    <!--
+      	修改一条记录，判断数据为空字段，不进行修改
+    -->
+    update CheckApply
+    <set>
+      <if test="MedicalID != null">
+        MedicalID = #{MedicalID,jdbcType=INTEGER},
+      </if>
+      <if test="RegistID != null">
+        RegistID = #{RegistID,jdbcType=INTEGER},
+      </if>
+      <if test="ItemID != null">
+        ItemID = #{ItemID,jdbcType=INTEGER},
+      </if>
+      <if test="Name != null">
+        Name = #{Name,jdbcType=VARCHAR},
+      </if>
+      <if test="Objective != null">
+        Objective = #{Objective,jdbcType=VARCHAR},
+      </if>
+      <if test="Position != null">
+        Position = #{Position,jdbcType=VARCHAR},
+      </if>
+      <if test="IsUrgent != null">
+        IsUrgent = #{IsUrgent,jdbcType=INTEGER},
+      </if>
+      <if test="Num != null">
+        Num = #{Num,jdbcType=INTEGER},
+      </if>
+      <if test="CreationTime != null">
+        CreationTime = #{CreationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="DoctorID != null">
+        DoctorID = #{DoctorID,jdbcType=INTEGER},
+      </if>
+      <if test="CheckOperID != null">
+        CheckOperID = #{CheckOperID,jdbcType=INTEGER},
+      </if>
+      <if test="ResultOperID != null">
+        ResultOperID = #{ResultOperID,jdbcType=INTEGER},
+      </if>
+      <if test="CheckTime != null">
+        CheckTime = #{CheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="Result != null">
+        Result = #{Result,jdbcType=VARCHAR},
+      </if>
+      <if test="ResultTime != null">
+        ResultTime = #{ResultTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="State != null">
+        State = #{State,jdbcType=INTEGER},
+      </if>
+      <if test="RecordType != null">
+        RecordType = #{RecordType,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    <!--
+      	修改一条记录，不建议使用；
+    -->
+    update CheckApply
+    set MedicalID = #{MedicalID,jdbcType=INTEGER},
+      RegistID = #{RegistID,jdbcType=INTEGER},
+      ItemID = #{ItemID,jdbcType=INTEGER},
+      Name = #{Name,jdbcType=VARCHAR},
+      Objective = #{Objective,jdbcType=VARCHAR},
+      Position = #{Position,jdbcType=VARCHAR},
+      IsUrgent = #{IsUrgent,jdbcType=INTEGER},
+      Num = #{Num,jdbcType=INTEGER},
+      CreationTime = #{CreationTime,jdbcType=TIMESTAMP},
+      DoctorID = #{DoctorID,jdbcType=INTEGER},
+      CheckOperID = #{CheckOperID,jdbcType=INTEGER},
+      ResultOperID = #{ResultOperID,jdbcType=INTEGER},
+      CheckTime = #{CheckTime,jdbcType=TIMESTAMP},
+      Result = #{Result,jdbcType=VARCHAR},
+      ResultTime = #{ResultTime,jdbcType=TIMESTAMP},
+      State = #{State,jdbcType=INTEGER},
+      RecordType = #{RecordType,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <!--  -->
+  
+  <sql id="Table_Column_List">
+    c.ID ID, MedicalID, RegistID, ItemID, Name, Objective, Position, IsUrgent, Num, CreationTime,
+    DoctorID, CheckOperID, ResultOperID, CheckTime, Result, ResultTime, State, c.RecordType RecordType,
+    ItemCode,ItemName,Format,Price,f.DelMark DelMark,
+    DeptName
+  </sql>  
+  <select id="getApplyByRegistAndStateAndType" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Table_Column_List" />
+    from CheckApply c , Fmeditem f ,Department d
+    where c.ItemID=f.ID and f.DeptID=d.ID and f.DelMark=1
+    	<if test=" RegistID!=null and RegistID!='' ">
+    		AND c.RegistID=#{RegistID}
+    	</if>
+    	<if test=" State!=null and State!='' ">
+    		AND c.State${State}
+    	</if>
+    	<if test=" RecordType!=null and RecordType!='' ">
+    		AND c.RecordType=#{RecordType}
+    	</if>
+  </select>  
+</mapper>

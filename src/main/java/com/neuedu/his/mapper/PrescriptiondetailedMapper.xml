@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.PrescriptiondetailedMapper">
+  <sql id="Base_Column_List">    
+    ID, PrescriptionID, DrugsID, DrugsUsage, Dosage, Frequency, Amount
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.Map">   
+    select 
+    <include refid="Base_Column_List" />
+    from PrescriptionDetailed
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" >    
+    delete from PrescriptionDetailed
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  <insert id="insert" parameterType="java.util.Map">    
+    insert into PrescriptionDetailed (ID, PrescriptionID, DrugsID, 
+      DrugsUsage, Dosage, Frequency, Amount)
+    values (#{ID,jdbcType=INTEGER}, #{PrescriptionID,jdbcType=INTEGER}, #{DrugsID,jdbcType=INTEGER}, 
+      #{DrugsUsage,jdbcType=VARCHAR}, #{Dosage,jdbcType=VARCHAR}, #{Frequency,jdbcType=VARCHAR}, #{Amount,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="java.util.Map">   
+    insert into PrescriptionDetailed
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="PrescriptionID != null">
+        PrescriptionID,
+      </if>
+      <if test="DrugsID != null">
+        DrugsID,
+      </if>
+      <if test="DrugsUsage != null">
+        DrugsUsage,
+      </if>
+      <if test="Dosage != null">
+        Dosage,
+      </if>
+      <if test="Frequency != null">
+        Frequency,
+      </if>
+      <if test="Amount != null">
+        Amount,
+      </if>
+       <if test="State != null">
+       State,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="PrescriptionID != null">
+        #{PrescriptionID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsID != null">
+        #{DrugsID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsUsage != null">
+        #{DrugsUsage,jdbcType=VARCHAR},
+      </if>
+      <if test="Dosage != null">
+        #{Dosage,jdbcType=VARCHAR},
+      </if>
+      <if test="Frequency != null">
+        #{Frequency,jdbcType=VARCHAR},
+      </if>
+      <if test="Amount != null">
+        #{Amount,jdbcType=DECIMAL},
+      </if>
+       <if test="State != null">
+       #{State},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">    
+    update PrescriptionDetailed
+    <set>
+      <if test="PrescriptionID != null">
+        PrescriptionID = #{PrescriptionID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsID != null">
+        DrugsID = #{DrugsID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsUsage != null">
+        DrugsUsage = #{DrugsUsage,jdbcType=VARCHAR},
+      </if>
+      <if test="Dosage != null">
+        Dosage = #{Dosage,jdbcType=VARCHAR},
+      </if>
+      <if test="Frequency != null">
+        Frequency = #{Frequency,jdbcType=VARCHAR},
+      </if>
+      <if test="Amount != null">
+        Amount = #{Amount,jdbcType=DECIMAL},
+      </if>
+       <if test="State != null">
+        State = #{State},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">    
+    update PrescriptionDetailed
+    set PrescriptionID = #{PrescriptionID,jdbcType=INTEGER},
+      DrugsID = #{DrugsID,jdbcType=INTEGER},
+      DrugsUsage = #{DrugsUsage,jdbcType=VARCHAR},
+      Dosage = #{Dosage,jdbcType=VARCHAR},
+      Frequency = #{Frequency,jdbcType=VARCHAR},
+      Amount = #{Amount,jdbcType=DECIMAL}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <!--      查询处方中的药品         -->
+  <sql id="Table_Column_List">    
+    p.ID ID, PrescriptionID, DrugsID, DrugsUsage, Dosage, Frequency, Amount,
+    DrugsCode,DrugsName,DrugsFormat,DrugsUnit,Manufacturer,DrugsPrice
+  </sql>
+  <select id="getDrugsByPrescription" parameterType="java.lang.Integer" resultType="java.util.Map">   
+    select 
+    <include refid="Table_Column_List" />
+    from PrescriptionDetailed p,Drugs d
+    where p.DrugsID=d.ID
+    <if test=" PrescriptionID!=null and PrescriptionID!='' ">
+       AND PrescriptionID = #{PrescriptionID}
+    </if>
+  </select>
+  
+  <delete id="delDrugsByPrescription" >
+    delete from PrescriptionDetailed
+    where PrescriptionID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <!--      发药 、退药         -->
+  <sql id="Table01_Column_List">
+    PrescriptionName,PrescriptionTime,
+    d.ID ID,d.Amount Amount,d.State State,
+    u.RealName RealName,
+    dr.DrugsName DrugsName,dr.DrugsPrice DrugsPrice
+  </sql>
+  <select id="getPrescriptionByRegisterAndDate" resultType="java.util.Map">   
+    select 
+    <include refid="Table01_Column_List" />
+    from Prescription p,PrescriptionDetailed d,User u,Drugs dr
+    where d.PrescriptionID=p.ID AND u.ID=p.UserID AND dr.ID=d.DrugsID
+    	AND p.PrescriptionState=2 AND d.State=3
+		AND p.RegistID = #{RegistID}
+		AND TO_DAYS(p.PrescriptionTime)=TO_DAYS(#{SearchDate})
+  </select>
+  
+</mapper>

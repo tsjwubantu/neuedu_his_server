@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.DrugsdetailedMapper">
+  
+  <sql id="Base_Column_List">   
+    ID, DrugsTempID, DrugsID, DrugsUsage, Dosage, Frequency
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.Map">  
+    select 
+    <include refid="Base_Column_List" />
+    from DrugsDetailed
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" >    
+    delete from DrugsDetailed
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">    
+    insert into DrugsDetailed (ID, DrugsTempID, DrugsID, 
+      DrugsUsage, Dosage, Frequency
+      )
+    values (#{ID,jdbcType=INTEGER}, #{drugsTempID,jdbcType=INTEGER}, #{drugsID,jdbcType=INTEGER}, 
+      #{drugsUsage,jdbcType=VARCHAR}, #{dosage,jdbcType=VARCHAR}, #{frequency,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">
+    insert into DrugsDetailed
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="drugsTempID != null">
+        DrugsTempID,
+      </if>
+      <if test="drugsID != null">
+        DrugsID,
+      </if>
+      <if test="drugsUsage != null">
+        DrugsUsage,
+      </if>
+      <if test="dosage != null">
+        Dosage,
+      </if>
+      <if test="frequency != null">
+        Frequency,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="drugsTempID != null">
+        #{drugsTempID,jdbcType=INTEGER},
+      </if>
+      <if test="drugsID != null">
+        #{drugsID,jdbcType=INTEGER},
+      </if>
+      <if test="drugsUsage != null">
+        #{drugsUsage,jdbcType=VARCHAR},
+      </if>
+      <if test="dosage != null">
+        #{dosage,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null">
+        #{frequency,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+    update DrugsDetailed
+    <set>
+      <if test="drugsTempID != null">
+        DrugsTempID = #{drugsTempID,jdbcType=INTEGER},
+      </if>
+      <if test="drugsID != null">
+        DrugsID = #{drugsID,jdbcType=INTEGER},
+      </if>
+      <if test="drugsUsage != null">
+        DrugsUsage = #{drugsUsage,jdbcType=VARCHAR},
+      </if>
+      <if test="dosage != null">
+        Dosage = #{dosage,jdbcType=VARCHAR},
+      </if>
+      <if test="frequency != null">
+        Frequency = #{frequency,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update DrugsDetailed
+    set DrugsTempID = #{drugsTempID,jdbcType=INTEGER},
+      DrugsID = #{drugsID,jdbcType=INTEGER},
+      DrugsUsage = #{drugsUsage,jdbcType=VARCHAR},
+      Dosage = #{dosage,jdbcType=VARCHAR},
+      Frequency = #{frequency,jdbcType=VARCHAR}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  
+  <sql id="Table_Column_List">
+		r.ID DrugsId,r.DrugsName DrugsName,r.DrugsFormat DrugsFormat,r.DrugsUnit DrugsUnit,
+		e.ID ID,e.DrugsTempID DrugstempId,e.DrugsUsage DrugsUsage,e.Dosage DrugsDosage,e.Frequency DrugsFrequency
+	</sql>
+	<select id="getTemplateDrugsList" resultType="java.util.Map">
+        SELECT 
+        <include refid="Table_Column_List" />
+        FROM Drugs r,DrugsDetailed e
+        WHERE r.ID=e.DrugsID 
+        <if test="keywords01!=null and keywords01!='' ">
+            AND e.DrugsTempID=#{keywords01}
+        </if>
+        
+    </select>
+    <select id="getTemplateDrugsCount" resultType="int">
+        SELECT count(*) FROM DrugsDetailed
+        <where>
+        <if test="keywords!=null">
+            AND Name LIKE concat('%',#{keywords},'%')
+        </if>
+        </where>
+    </select>
+    
+    <delete id="deleteTemplateDrugsByIds">
+        DELETE FROM DrugsDetailed 
+        WHERE ID IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteTemplateDrugsByTemplate">
+        DELETE FROM DrugsDetailed 
+        WHERE DrugsTempID IN
+        <foreach collection="TemplateIds" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateTemplateDrugsById" parameterType="java.util.Map">
+        UPDATE DrugsDetailed 
+        SET 
+        	DrugsUsage=#{Usage},
+        	Dosage=#{Dosage},
+        	Frequency=#{Frequency}
+        WHERE ID=#{ID}
+    </update>
+    
+    <insert id="addTemplateDrugs" parameterType="java.util.Map">
+        INSERT INTO DrugsDetailed(
+        	DrugsTempID,DrugsID,DrugsUsage,Dosage,Frequency
+        )
+        VALUES(
+        	#{DrugtempId},#{DrugsId},#{Usage},#{Dosage},#{Frequency}
+        )
+    </insert>
+</mapper>

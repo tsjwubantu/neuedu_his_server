@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.MedicalrecordMapper">
+  <sql id="Base_Column_List">    
+    ID, CaseNumber, RegistID, Readme, Present, PresentTreat, History, Allergy, Physique, 
+    Proposal, Careful, CheckResult, Diagnosis, Handling, CaseState
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from MedicalRecord
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+    
+  <delete id="deleteByPrimaryKey" >
+    delete from MedicalRecord
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">
+    insert into MedicalRecord (CaseNumber, RegistID, 
+      Readme, Present, PresentTreat, 
+      History, Allergy, Physique, 
+      Proposal, Careful, CheckResult, 
+      Diagnosis, Handling, CaseState
+      )
+    values ( #{caseNumber,jdbcType=VARCHAR}, #{registID,jdbcType=INTEGER}, 
+      #{readme,jdbcType=VARCHAR}, #{present,jdbcType=VARCHAR}, #{presentTreat,jdbcType=VARCHAR}, 
+      #{history,jdbcType=VARCHAR}, #{allergy,jdbcType=VARCHAR}, #{physique,jdbcType=VARCHAR}, 
+      #{proposal,jdbcType=VARCHAR}, #{careful,jdbcType=VARCHAR}, #{checkResult,jdbcType=VARCHAR}, 
+      #{diagnosis,jdbcType=VARCHAR}, #{handling,jdbcType=VARCHAR}, #{caseState,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">
+  	<selectKey resultType="java.lang.Long" keyProperty="ID" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+    </selectKey>  
+    insert into MedicalRecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">      
+      <if test="CaseNumber != null">
+        CaseNumber,
+      </if>
+      <if test="RegistID != null">
+        RegistID,
+      </if>
+      <if test="Readme != null">
+        Readme,
+      </if>
+      <if test="Present != null">
+        Present,
+      </if>
+      <if test="PresentTreat != null">
+        PresentTreat,
+      </if>
+      <if test="History != null">
+        History,
+      </if>
+      <if test="Allergy != null">
+        Allergy,
+      </if>
+      <if test="Physique != null">
+        Physique,
+      </if>
+      <if test="Proposal != null">
+        Proposal,
+      </if>
+      <if test="Careful != null">
+        Careful,
+      </if>
+      <if test="CheckResult != null">
+        CheckResult,
+      </if>
+      <if test="Diagnosis != null">
+        Diagnosis,
+      </if>
+      <if test="Handling != null">
+        Handling,
+      </if>
+      <if test="CaseState != null">
+        CaseState,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">      
+      <if test="CaseNumber != null">
+        #{CaseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="RegistID != null">
+        #{RegistID,jdbcType=INTEGER},
+      </if>
+      <if test="Readme != null">
+        #{Readme,jdbcType=VARCHAR},
+      </if>
+      <if test="Present != null">
+        #{Present,jdbcType=VARCHAR},
+      </if>
+      <if test="PresentTreat != null">
+        #{PresentTreat,jdbcType=VARCHAR},
+      </if>
+      <if test="History != null">
+        #{History,jdbcType=VARCHAR},
+      </if>
+      <if test="Allergy != null">
+        #{Allergy,jdbcType=VARCHAR},
+      </if>
+      <if test="Physique != null">
+        #{Physique,jdbcType=VARCHAR},
+      </if>
+      <if test="Proposal != null">
+        #{Proposal,jdbcType=VARCHAR},
+      </if>
+      <if test="Careful != null">
+        #{Careful,jdbcType=VARCHAR},
+      </if>
+      <if test="CheckResult != null">
+        #{CheckResult,jdbcType=VARCHAR},
+      </if>
+      <if test="Diagnosis != null">
+        #{Diagnosis,jdbcType=VARCHAR},
+      </if>
+      <if test="Handling != null">
+        #{Handling,jdbcType=VARCHAR},
+      </if>
+      <if test="CaseState != null">
+        #{CaseState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+    update MedicalRecord
+    <set>
+      <if test="CaseNumber != null">
+        CaseNumber = #{CaseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="RegistID != null">
+        RegistID = #{RegistID,jdbcType=INTEGER},
+      </if>
+      <if test="Readme != null">
+        Readme = #{Readme,jdbcType=VARCHAR},
+      </if>
+      <if test="Present != null">
+        Present = #{Present,jdbcType=VARCHAR},
+      </if>
+      <if test="PresentTreat != null">
+        PresentTreat = #{PresentTreat,jdbcType=VARCHAR},
+      </if>
+      <if test="History != null">
+        History = #{History,jdbcType=VARCHAR},
+      </if>
+      <if test="Allergy != null">
+        Allergy = #{Allergy,jdbcType=VARCHAR},
+      </if>
+      <if test="Physique != null">
+        Physique = #{Physique,jdbcType=VARCHAR},
+      </if>
+      <if test="Proposal != null">
+        Proposal = #{Proposal,jdbcType=VARCHAR},
+      </if>
+      <if test="Careful != null">
+        Careful = #{Careful,jdbcType=VARCHAR},
+      </if>
+      <if test="CheckResult != null">
+        CheckResult = #{CheckResult,jdbcType=VARCHAR},
+      </if>
+      <if test="Diagnosis != null">
+        Diagnosis = #{Diagnosis,jdbcType=VARCHAR},
+      </if>
+      <if test="Handling != null">
+        Handling = #{Handling,jdbcType=VARCHAR},
+      </if>
+      <if test="CaseState != null">
+        CaseState = #{CaseState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update MedicalRecord
+    set CaseNumber = #{CaseNumber,jdbcType=VARCHAR},
+      RegistID = #{RegistID,jdbcType=INTEGER},
+      Readme = #{Readme,jdbcType=VARCHAR},
+      Present = #{Present,jdbcType=VARCHAR},
+      PresentTreat = #{PresentTreat,jdbcType=VARCHAR},
+      History = #{History,jdbcType=VARCHAR},
+      Allergy = #{Allergy,jdbcType=VARCHAR},
+      Physique = #{Physique,jdbcType=VARCHAR},
+      Proposal = #{Proposal,jdbcType=VARCHAR},
+      Careful = #{Careful,jdbcType=VARCHAR},
+      CheckResult = #{CheckResult,jdbcType=VARCHAR},
+      Diagnosis = #{Diagnosis,jdbcType=VARCHAR},
+      Handling = #{Handling,jdbcType=VARCHAR},
+      CaseState = #{CaseState,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  
+  <select id="getMedicalRecord" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from MedicalRecord
+    where RegistID = #{RegistID}
+  </select>
+</mapper>

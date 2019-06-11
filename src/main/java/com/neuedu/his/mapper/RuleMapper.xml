@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.RuleMapper">
+     <!-- 查询规则 -->
+     <select id="getRuleList" resultType="java.util.Map">
+        SELECT a.RuleName RuleName,c.DeptName DeptName,b.RealName RealName,a.Week Week,
+               a.Id Id,a.UserId UserId,a.DeptId DeptId
+        FROM Rule a,User b,Department c
+        WHERE a.UserId = b.id AND a.DeptId = c.id AND 1=1
+        
+        <if test="keywords!=null and keywords!=''">
+            AND a.DeptId=#{keywords}
+        </if>
+        ORDER BY DeptName DESC limit #{start},#{count};
+     </select>
+    
+    <select id="getRuleCount" resultType="int">
+        SELECT count(*) FROM Rule
+        <where>
+            
+        <if test="keywords!=null">
+                AND RuleName LIKE concat('%',#{keywords},'%')
+        </if>
+        
+        <if test="keywords!=null">
+                OR RuleName LIKE concat('%',#{keywords},'%')
+        </if>
+        </where>
+    </select>
+    
+    <delete id="deleteRuleByIds">
+        DELETE FROM Rule WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteRuleByIds2">
+        UPDATE Rule SET DelMark=0 WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateRuleById" parameterType="java.util.Map">
+        UPDATE Rule SET UserId=#{UserId},
+        RuleName=#{RuleName},
+        DeptId=#{DeptId},
+        Week=#{Week}
+        WHERE id=#{id}
+    </update>
+    
+    <insert id="addRule" parameterType="java.util.Map">
+        INSERT INTO Rule SET UserId=#{UserId},
+        RuleName=#{RuleName},
+        DeptId=#{DeptId},
+        Week=#{Week}
+    </insert>
+
+</mapper>

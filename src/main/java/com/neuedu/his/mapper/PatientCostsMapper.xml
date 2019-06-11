@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.PatientCostsMapper">
+
+     <!-- 记录数量统计  交费/退费  时用的    处方表 Prescription-->
+     <select id="getPatientCostsCount" resultType="int">
+        SELECT count(*) 
+        FROM   Register a,Prescription b,PrescriptionDetailed c,Drugs d
+        WHERE  b.RegistID=a.ID AND c.PrescriptionID=b.ID AND c.DrugsID=d.ID
+               AND b.PrescriptionState=#{state}
+        <if test="keywords!=null and keywords!=''">
+            AND a.CaseNumber =#{keywords}
+        </if>
+     </select>
+     
+     <!-- 记录数量统计  交费/退费  时用的  CheckApply (患者检查/检验/处置申请表)表-->
+     <select id="getPatientCostsCount02" resultType="int">
+         SELECT count(*) 
+         FROM   Register a,CheckApply b,Fmeditem c
+         WHERE  b.RegistID=a.ID AND c.ID=b.ItemID 
+                AND b.State=#{state}
+        <if test="keywords!=null and keywords!=''">
+            AND a.CaseNumber =#{keywords}
+        </if>
+     </select>
+     
+     <!-- 记录查询  交费/退费  时用的
+                 方式一  备份
+        SELECT a.CaseNumber,a.RealName,b.ID prenID,c.DrugsID,d.DrugsName
+               ,d.DrugsPrice,c.Amount,b.PrescriptionState,b.RegistID,a.RegisterID
+               ,DATE_FORMAT(b.PrescriptionTime,'%Y-%m-%d %H:%i:%s') PrescriptionTime
+         FROM  Register a,Prescription b,PrescriptionDetailed c,Drugs d
+         WHERE  b.RegistID=a.ID AND c.PrescriptionID=b.ID AND c.DrugsID=d.ID
+                AND b.PrescriptionState=#{state}
+         AND a.CaseNumber =#{keywords}
+         
+         ORDER BY a.VisitDate DESC limit #{start},#{count};
+         
+         方式二  备份 
+         SELECT a.CaseNumber,a.RealName,b.MedicalID prenID,c.ID DrugsID,c.ItemName DrugsName,c.Price DrugsPrice,b.Num Amount,
+       b.state PrescriptionState,b.RegistID,a.RegisterID
+       ,DATE_FORMAT(b.CreationTime,'%Y-%m-%d %H:%i:%s') CreationTime
+         FROM  Register a,CheckApply b,Fmeditem c
+         WHERE  b.RegistID=a.ID AND c.ID=b.ItemID 
+                AND b.State=2
+         AND a.CaseNumber ='600600'  
+         
+         ORDER BY a.VisitDate DESC limit #{start},#{count};
+         
+          方式三
+          
+          SELECT a.CaseNumber,a.RealName,b.ID prenID,c.DrugsID,d.DrugsName
+               ,d.DrugsPrice,c.Amount,b.PrescriptionState,b.RegistID,a.RegisterID
+               ,DATE_FORMAT(b.PrescriptionTime,'%Y-%m-%d %H:%i:%s') PrescriptionTime,
+               1 aaa
+         FROM  Register a,Prescription b,PrescriptionDetailed c,Drugs d
+         WHERE  b.RegistID=a.ID AND c.PrescriptionID=b.ID AND c.DrugsID=d.ID
+                AND b.PrescriptionState=2
+         AND a.CaseNumber ='600600'
+UNION
+SELECT a.CaseNumber,a.RealName,b.MedicalID prenID,c.ID DrugsID,c.ItemName DrugsName,c.Price DrugsPrice,b.Num Amount,
+       b.state PrescriptionState,b.RegistID,a.RegisterID
+       ,DATE_FORMAT(b.CreationTime,'%Y-%m-%d %H:%i:%s') PrescriptionTime,
+       2 aaa
+         FROM  Register a,CheckApply b,Fmeditem c
+         WHERE  b.RegistID=a.ID AND c.ID=b.ItemID 
+                AND b.State=2
+         AND a.CaseNumber ='600600'        
+          
+     
+     -->
+     <select id="getPatientCostsList" resultType="java.util.Map">
+         SELECT a.CaseNumber,a.RealName,b.ID prenID,c.DrugsID,d.DrugsName
+               ,d.DrugsPrice,c.Amount,b.PrescriptionState,b.RegistID,a.RegisterID
+               ,DATE_FORMAT(b.PrescriptionTime,'%Y-%m-%d %H:%i:%s') PrescriptionTime,
+               1 tabnum,c.ID PCID
+         FROM  Register a,Prescription b,PrescriptionDetailed c,Drugs d
+         WHERE  b.RegistID=a.ID AND c.PrescriptionID=b.ID AND c.DrugsID=d.ID
+                AND b.PrescriptionState=#{state}
+                AND a.CaseNumber =#{keywords}
+      UNION
+         SELECT a.CaseNumber,a.RealName,b.MedicalID prenID,c.ID DrugsID,c.ItemName DrugsName,c.Price DrugsPrice,b.Num Amount,
+                b.state PrescriptionState,b.RegistID,a.RegisterID
+                ,DATE_FORMAT(b.CreationTime,'%Y-%m-%d %H:%i:%s') PrescriptionTime,
+                2 tabnum,b.ID PCID
+         FROM  Register a,CheckApply b,Fmeditem c
+         WHERE  b.RegistID=a.ID AND c.ID=b.ItemID 
+                AND b.State=#{state}
+                AND a.CaseNumber =#{keywords}     
+      </select>
+      
+      <select id="getTab" resultType="java.util.Map">
+        SELECT b.ID prenID,1 tabnum
+		FROM  Register a,Prescription b,PrescriptionDetailed c,Drugs d
+		WHERE  b.RegistID=a.ID AND c.PrescriptionID=b.ID AND c.DrugsID=d.ID
+		       AND b.PrescriptionState=#{state}
+               AND a.CaseNumber =#{keywords}
+		
+		UNION
+		
+		SELECT b.MedicalID prenID,2 tabnum
+		FROM  Register a,CheckApply b,Fmeditem c
+		WHERE  b.RegistID=a.ID AND c.ID=b.ItemID 
+		       AND b.State=#{state}
+               AND a.CaseNumber =#{keywords} 
+     </select>
+     
+     
+     <!-- 患者退费时 确认身份查询用的-->
+     <select id="getPatient" resultType="com.neuedu.his.bean.Register">
+       SELECT a.RealName,a.IDnumber,a.HomeAddress
+       FROM   Register a,Invoice b
+       WHERE  a.ID=b.RegistID 
+        
+       <if test="keywords!=null and keywords!=''">
+            AND  a.CaseNumber =#{keywords}
+       </if>
+       limit 0,1;
+     </select>
+     
+    <!-- 记录数量统计   患者查询时用的-->
+     <select id="getPatientQueryCount" resultType="int">
+        SELECT count(*) 
+        FROM Register a,PatientCosts b,SettleCategory c
+        WHERE a.ID=b.RegistID AND a.SettleID=c.ID 
+        
+        <if test="keywords!=null and keywords!=''">
+            AND a.CaseNumber =#{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+            AND ( a.VisitDate &gt;= #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+            AND a.VisitDate &lt;= #{keywords3} )
+        </if>
+     </select>
+   
+     <!-- 患者费用查询  患者查询时用的-->
+     <select id="getPatientQuery" resultType="java.util.Map">
+        SELECT a.RealName,b.Name,b.Price,b.Amount,b.DeptID,a.CaseNumber,a.VisitDate
+        ,c.SettleName,a.RegisterID,b.ID
+        FROM Register a,PatientCosts b,SettleCategory c
+        WHERE a.ID=b.RegistID AND a.SettleID=c.ID 
+        
+        <if test="keywords!=null and keywords!=''">
+            AND a.CaseNumber =#{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+            AND ( a.VisitDate &gt;= #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+            AND a.VisitDate &lt;= #{keywords3} )
+        </if>
+        ORDER BY a.VisitDate DESC limit #{start},#{count};
+     </select>
+     
+     <!-- 消费金额统计  患者查询时用的-->
+     <select id="getPatientSumFee" resultType="float">
+        SELECT sum(Price * Amount) 
+        FROM Register a,PatientCosts b
+        WHERE a.ID=b.RegistID 
+        <if test="keywords!=null and keywords!=''">
+            AND a.CaseNumber =#{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!=''">
+            AND ( a.VisitDate &gt;= #{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!=''">
+            AND a.VisitDate &lt;= #{keywords3} )
+        </if>
+     </select>
+     
+    <!-- new 更新处方表的 交费状态    PrescriptionState=3   3-已交费    6-已退费-->
+    <update id="updatePrescriptionById" parameterType="java.util.Map">
+        UPDATE Prescription SET PrescriptionState=#{State}
+        WHERE ID=#{ID}
+    </update>
+    
+    <!-- new2 更新CheckApply (患者检查/检验/处置申请表)表的 交费状态 3-已交费    6-已退费-->
+    <update id="updateCheckApplyById" parameterType="java.util.Map">
+        UPDATE CheckApply SET State=#{State}
+        WHERE MedicalID=#{ID}
+    </update>
+    
+    <!-- 插入患者消费信息数据-->
+    <insert id="addPatientCosts" parameterType="java.util.Map">
+       INSERT INTO PatientCosts SET RegistID=#{RegistID},
+        InvoiceID=#{InvoiceID},
+        ItemID=#{ItemID},
+        ItemType=#{ItemType},
+        Name=#{Name},
+        Price=#{Price},
+        Amount=#{Amount},
+        DeptID=#{DeptID},
+        Createtime=#{Createtime},
+        CreateOperID=#{CreateOperID},
+        PayTime=#{PayTime},
+        RegisterID=#{RegisterID},
+        FeeType=#{FeeType},
+        BackID=#{BackID}
+    </insert>
+</mapper>

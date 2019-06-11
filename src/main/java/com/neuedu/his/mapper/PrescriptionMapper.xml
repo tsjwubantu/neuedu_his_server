@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.PrescriptionMapper">
+  <sql id="Base_Column_List">    
+    ID, MedicalID, RegistID, UserID, PrescriptionName, PrescriptionTime, PrescriptionState
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from Prescription
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" >
+    delete from Prescription
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  <insert id="insert" parameterType="java.util.Map">
+    insert into Prescription (ID, MedicalID, RegistID, 
+      UserID, PrescriptionName, PrescriptionTime, 
+      PrescriptionState)
+    values (#{ID,jdbcType=INTEGER}, #{MedicalID,jdbcType=INTEGER}, #{RegistID,jdbcType=INTEGER}, 
+      #{UserID,jdbcType=INTEGER}, #{PrescriptionName,jdbcType=VARCHAR}, #{PrescriptionTime,jdbcType=TIMESTAMP}, 
+      #{PrescriptionState,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="java.util.Map">
+    <selectKey resultType="int" keyProperty="ID" order="AFTER">
+            select LAST_INSERT_ID()
+        </selectKey>
+    insert into Prescription
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="MedicalID != null">
+        MedicalID,
+      </if>
+      <if test="RegistID != null">
+        RegistID,
+      </if>
+      <if test="UserID != null">
+        UserID,
+      </if>
+      <if test="PrescriptionName != null">
+        PrescriptionName,
+      </if>
+      <if test="PrescriptionTime != null">
+        PrescriptionTime,
+      </if>
+      <if test="PrescriptionState != null">
+        PrescriptionState,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="MedicalID != null">
+        #{MedicalID,jdbcType=INTEGER},
+      </if>
+      <if test="RegistID != null">
+        #{RegistID,jdbcType=INTEGER},
+      </if>
+      <if test="UserID != null">
+        #{UserID,jdbcType=INTEGER},
+      </if>
+      <if test="PrescriptionName != null">
+        #{PrescriptionName,jdbcType=VARCHAR},
+      </if>
+      <if test="PrescriptionTime != null">
+        #{PrescriptionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="PrescriptionState != null">
+        #{PrescriptionState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+    update Prescription
+    <set>
+      <if test="MedicalID != null">
+        MedicalID = #{MedicalID,jdbcType=INTEGER},
+      </if>
+      <if test="RegistID != null">
+        RegistID = #{RegistID,jdbcType=INTEGER},
+      </if>
+      <if test="UserID != null">
+        UserID = #{UserID,jdbcType=INTEGER},
+      </if>
+      <if test="PrescriptionName != null">
+        PrescriptionName = #{PrescriptionName,jdbcType=VARCHAR},
+      </if>
+      <if test="PrescriptionTime != null">
+        PrescriptionTime = #{PrescriptionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="PrescriptionState != null">
+        PrescriptionState = #{PrescriptionState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update Prescription
+    set MedicalID = #{MedicalID,jdbcType=INTEGER},
+      RegistID = #{RegistID,jdbcType=INTEGER},
+      UserID = #{UserID,jdbcType=INTEGER},
+      PrescriptionName = #{PrescriptionName,jdbcType=VARCHAR},
+      PrescriptionTime = #{PrescriptionTime,jdbcType=TIMESTAMP},
+      PrescriptionState = #{PrescriptionState,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <!--             -->
+  <select id="getPresByRegist" parameterType="java.lang.Integer" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from Prescription
+    <where>
+		<if test=" RegistID!=null and RegistID!='' ">
+    		AND RegistID=#{RegistID}
+    	</if>
+    	<if test=" PrescriptionState!=null and PrescriptionState!='' ">
+    		AND PrescriptionState${PrescriptionState}
+    	</if>
+    </where>
+  </select>
+</mapper>

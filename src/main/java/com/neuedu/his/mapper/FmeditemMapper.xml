@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.FmeditemMapper">
+  <sql id="Base_Column_List">   
+    ID, ItemCode, ItemName, Format, Price, ExpClassID, DeptID, MnemonicCode, CreationDate, 
+    LastUpdateDate, RecordType, DelMark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from Fmeditem
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+    
+  <delete id="deleteByPrimaryKey" >   
+    delete from Fmeditem
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">
+    insert into Fmeditem (ID, ItemCode, ItemName, 
+      Format, Price, ExpClassID, 
+      DeptID, MnemonicCode, CreationDate, 
+      LastUpdateDate, RecordType, DelMark
+      )
+    values (#{ID,jdbcType=INTEGER}, #{itemCode,jdbcType=VARCHAR}, #{itemName,jdbcType=VARCHAR}, 
+      #{format,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{expClassID,jdbcType=INTEGER}, 
+      #{deptID,jdbcType=INTEGER}, #{mnemonicCode,jdbcType=VARCHAR}, #{creationDate,jdbcType=TIMESTAMP}, 
+      #{lastUpdateDate,jdbcType=TIMESTAMP}, #{recordType,jdbcType=INTEGER}, #{delMark,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="java.util.Map">
+    insert into Fmeditem
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="itemCode != null">
+        ItemCode,
+      </if>
+      <if test="itemName != null">
+        ItemName,
+      </if>
+      <if test="format != null">
+        Format,
+      </if>
+      <if test="price != null">
+        Price,
+      </if>
+      <if test="expClassID != null">
+        ExpClassID,
+      </if>
+      <if test="deptID != null">
+        DeptID,
+      </if>
+      <if test="mnemonicCode != null">
+        MnemonicCode,
+      </if>
+      <if test="creationDate != null">
+        CreationDate,
+      </if>
+      <if test="lastUpdateDate != null">
+        LastUpdateDate,
+      </if>
+      <if test="recordType != null">
+        RecordType,
+      </if>
+      <if test="delMark != null">
+        DelMark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="itemCode != null">
+        #{itemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="itemName != null">
+        #{itemName,jdbcType=VARCHAR},
+      </if>
+      <if test="format != null">
+        #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="expClassID != null">
+        #{expClassID,jdbcType=INTEGER},
+      </if>
+      <if test="deptID != null">
+        #{deptID,jdbcType=INTEGER},
+      </if>
+      <if test="mnemonicCode != null">
+        #{mnemonicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="creationDate != null">
+        #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateDate != null">
+        #{lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recordType != null">
+        #{recordType,jdbcType=INTEGER},
+      </if>
+      <if test="delMark != null">
+        #{delMark,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+    update Fmeditem
+    <set>
+      <if test="itemCode != null">
+        ItemCode = #{itemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="itemName != null">
+        ItemName = #{itemName,jdbcType=VARCHAR},
+      </if>
+      <if test="format != null">
+        Format = #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        Price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="expClassID != null">
+        ExpClassID = #{expClassID,jdbcType=INTEGER},
+      </if>
+      <if test="deptID != null">
+        DeptID = #{deptID,jdbcType=INTEGER},
+      </if>
+      <if test="mnemonicCode != null">
+        MnemonicCode = #{mnemonicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="creationDate != null">
+        CreationDate = #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateDate != null">
+        LastUpdateDate = #{lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recordType != null">
+        RecordType = #{recordType,jdbcType=INTEGER},
+      </if>
+      <if test="delMark != null">
+        DelMark = #{delMark,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update Fmeditem
+    set ItemCode = #{itemCode,jdbcType=VARCHAR},
+      ItemName = #{itemName,jdbcType=VARCHAR},
+      Format = #{format,jdbcType=VARCHAR},
+      Price = #{price,jdbcType=DECIMAL},
+      ExpClassID = #{expClassID,jdbcType=INTEGER},
+      DeptID = #{deptID,jdbcType=INTEGER},
+      MnemonicCode = #{mnemonicCode,jdbcType=VARCHAR},
+      CreationDate = #{creationDate,jdbcType=TIMESTAMP},
+      LastUpdateDate = #{lastUpdateDate,jdbcType=TIMESTAMP},
+      RecordType = #{recordType,jdbcType=INTEGER},
+      DelMark = #{delMark,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 分页显示医技信息 -->
+  <select id="getFmeList" resultType="java.util.Map">
+     SELECT
+     <include refid="Base_Column_List" />
+     FROM Fmeditem
+     WHERE DelMark = 1
+     <if test="keywords!=null and keywords!='' ">
+		AND MnemonicCode LIKE concat('%',#{keywords},'%')
+     </if> 
+		ORDER BY LastUpdateDate DESC,CreationDate DESC,ID ASC 
+		LIMIT #{start},#{count};
+  </select>
+   <select id="getFmeCount" resultType="int">
+      SELECT count(*) FROM Fmeditem
+      WHERE DelMark = 1
+      <if test="keywords!=null and keywords!='' ">
+      	AND MnemonicCode LIKE concat('%',#{keywords},'%')
+      </if>
+  </select>
+  
+  <!-- 分页显示医技信息 根据“项目类型”RecordType 1-检查2-检验3-处置   -->
+  <select id="getFmeListByRecordtype" resultType="java.util.Map">
+     SELECT
+     <include refid="Base_Column_List" />
+     FROM Fmeditem
+     WHERE DelMark = 1
+     <if test="MnemonicCode!=null and MnemonicCode!='' ">
+		AND MnemonicCode LIKE concat('%',#{MnemonicCode},'%')
+     </if>
+     <if test="RecordType!=null and RecordType!='' ">
+		AND RecordType = #{RecordType}
+     </if> 
+		ORDER BY LastUpdateDate DESC,CreationDate DESC,ID ASC 
+		LIMIT #{start},#{count};
+  </select>
+   <select id="getFmeCountByRecordtype" resultType="int">
+      SELECT count(*) FROM Fmeditem
+      WHERE DelMark = 1
+      <if test="MnemonicCode!=null and MnemonicCode!='' ">
+		AND MnemonicCode LIKE concat('%',#{MnemonicCode},'%')
+     </if>
+     <if test="RecordType!=null and RecordType!='' ">
+		AND RecordType = #{RecordType}
+     </if>
+  </select>
+  
+  <!--  高用开始        -->
+   <select id="getFmeditemList" resultType="java.util.Map">
+        SELECT a.ItemCode,a.ItemName,a.ID,a.Format,a.Price,
+        b.ExpName,c.DeptName,a.RecordType,
+        a.ExpClassID ecid,a.DeptID dpid,a.MnemonicCode
+        FROM Fmeditem a,ExpenseClass b,Department c
+        WHERE a.ExpClassID = b.ID AND a.DeptID = c.ID AND 1=1
+        
+        <if test="keywords!=null">
+            AND ( ItemCode LIKE concat('%',#{keywords},'%')
+        </if>
+        <if test="keywords!=null">
+            OR ItemName LIKE concat('%',#{keywords},'%') )
+        </if>
+        ORDER BY id DESC limit #{start},#{count};
+    </select>
+    
+     <select id="getFmeditemCount" resultType="int">
+        SELECT count(*) FROM Fmeditem
+        <where>
+            
+        <if test="keywords!=null">
+                AND ItemCode LIKE concat('%',#{keywords},'%')
+        </if>
+        <if test="keywords!=null">
+                OR ItemName LIKE concat('%',#{keywords},'%')
+        </if>
+        </where>
+    </select>
+  <delete id="deleteFmeditemByIds">
+        DELETE FROM Fmeditem WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteFmeditemByIds2">
+        UPDATE Fmeditem SET DelMark=0 WHERE ID IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateFmeditemById" parameterType="java.util.Map">
+        UPDATE Fmeditem SET ItemCode=#{ItemCode},
+        ItemName=#{ItemName},
+        Format=#{Format},
+        Price=#{Price},
+        DeptID=#{DeptID},
+        ExpClassID=#{ExpClassID},
+        RecordType=#{RecordType},
+        MnemonicCode=#{MnemonicCode},
+        LastUpdateDate=#{LastUpdateDate}
+        WHERE ID=#{ID}
+    </update>
+    <!-- -->
+    <insert id="addFmeditem" parameterType="java.util.Map">
+        INSERT INTO Fmeditem SET ItemCode=#{ItemCode},
+        ItemName=#{ItemName},
+        Format=#{Format},
+        Price=#{Price},
+        ExpClassID=#{ExpClassID},
+        DeptID=#{DeptID},
+        CreationDate=#{CreationDate},
+        RecordType=#{RecordType},
+        MnemonicCode=#{MnemonicCode}
+     </insert>
+</mapper>

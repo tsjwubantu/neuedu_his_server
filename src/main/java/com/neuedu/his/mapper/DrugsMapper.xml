@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.DrugsMapper">
+  
+  <sql id="Base_Column_List">    
+    ID, DrugsCode, DrugsName, DrugsFormat, DrugsUnit, Manufacturer, DrugsDosageID, DrugsTypeID, 
+    DrugsPrice, MnemonicCode, CreationDate, LastUpdateDate, DelMark
+  </sql>
+    
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from Drugs
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+    
+  <delete id="deleteByPrimaryKey" >    
+    delete from Drugs
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">    
+    insert into Drugs (ID, DrugsCode, DrugsName, 
+      DrugsFormat, DrugsUnit, Manufacturer, 
+      DrugsDosageID, DrugsTypeID, DrugsPrice, 
+      MnemonicCode, CreationDate, LastUpdateDate, 
+      DelMark)
+    values (#{ID,jdbcType=INTEGER}, #{DrugsCode,jdbcType=CHAR}, #{DrugsName,jdbcType=VARCHAR}, 
+      #{DrugsFormat,jdbcType=VARCHAR}, #{DrugsUnit,jdbcType=VARCHAR}, #{Manufacturer,jdbcType=VARCHAR}, 
+      #{DrugsDosageID,jdbcType=INTEGER}, #{DrugsTypeID,jdbcType=INTEGER}, #{DrugsPrice,jdbcType=DECIMAL}, 
+      #{MnemonicCode,jdbcType=VARCHAR}, #{CreationDate,jdbcType=TIMESTAMP}, #{LastUpdateDate,jdbcType=TIMESTAMP}, 
+      #{DelMark,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">   
+    insert into Drugs
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="DrugsCode != null">
+        DrugsCode,
+      </if>
+      <if test="DrugsName != null">
+        DrugsName,
+      </if>
+      <if test="DrugsFormat != null">
+        DrugsFormat,
+      </if>
+      <if test="DrugsUnit != null">
+        DrugsUnit,
+      </if>
+      <if test="Manufacturer != null">
+        Manufacturer,
+      </if>
+      <if test="DrugsDosageID != null">
+        DrugsDosageID,
+      </if>
+      <if test="DrugsTypeID != null">
+        DrugsTypeID,
+      </if>
+      <if test="DrugsPrice != null">
+        DrugsPrice,
+      </if>
+      <if test="MnemonicCode != null">
+        MnemonicCode,
+      </if>
+      <if test="CreationDate != null">
+        CreationDate,
+      </if>
+      <if test="LastUpdateDate != null">
+        LastUpdateDate,
+      </if>
+      <if test="DelMark != null">
+        DelMark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsCode != null">
+        #{DrugsCode,jdbcType=CHAR},
+      </if>
+      <if test="DrugsName != null">
+        #{DrugsName,jdbcType=VARCHAR},
+      </if>
+      <if test="DrugsFormat != null">
+        #{DrugsFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="DrugsUnit != null">
+        #{DrugsUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="Manufacturer != null">
+        #{Manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="DrugsDosageID != null">
+        #{DrugsDosageID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsTypeID != null">
+        #{DrugsTypeID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsPrice != null">
+        #{DrugsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="MnemonicCode != null">
+        #{MnemonicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="CreationDate != null">
+        #{CreationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="LastUpdateDate != null">
+        #{LastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="DelMark != null">
+        #{DelMark,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">    
+    update Drugs
+    <set>
+      <if test="DrugsCode != null">
+        DrugsCode = #{DrugsCode,jdbcType=CHAR},
+      </if>
+      <if test="DrugsName != null">
+        DrugsName = #{DrugsName,jdbcType=VARCHAR},
+      </if>
+      <if test="DrugsFormat != null">
+        DrugsFormat = #{DrugsFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="DrugsUnit != null">
+        DrugsUnit = #{DrugsUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="Manufacturer != null">
+        Manufacturer = #{Manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="DrugsDosageID != null">
+        DrugsDosageID = #{DrugsDosageID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsTypeID != null">
+        DrugsTypeID = #{DrugsTypeID,jdbcType=INTEGER},
+      </if>
+      <if test="DrugsPrice != null">
+        DrugsPrice = #{DrugsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="MnemonicCode != null">
+        MnemonicCode = #{MnemonicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="CreationDate != null">
+        CreationDate = #{CreationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="LastUpdateDate != null">
+        LastUpdateDate = #{LastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="DelMark != null">
+        DelMark = #{DelMark,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">    
+    update Drugs
+    set DrugsCode = #{DrugsCode,jdbcType=CHAR},
+      DrugsName = #{DrugsName,jdbcType=VARCHAR},
+      DrugsFormat = #{DrugsFormat,jdbcType=VARCHAR},
+      DrugsUnit = #{DrugsUnit,jdbcType=VARCHAR},
+      Manufacturer = #{Manufacturer,jdbcType=VARCHAR},
+      DrugsDosageID = #{DrugsDosageID,jdbcType=INTEGER},
+      DrugsTypeID = #{DrugsTypeID,jdbcType=INTEGER},
+      DrugsPrice = #{DrugsPrice,jdbcType=DECIMAL},
+      MnemonicCode = #{MnemonicCode,jdbcType=VARCHAR},
+      CreationDate = #{CreationDate,jdbcType=TIMESTAMP},
+      LastUpdateDate = #{LastUpdateDate,jdbcType=TIMESTAMP},
+      DelMark = #{DelMark,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+ <!--  
+     	新加入的方法
+  --> 
+	<!-- 批量插入上传的excel数据 -->
+	<insert id ="insertDrugsBatch" parameterType="java.util.List" >
+		INSERT INTO Drugs
+	          (DrugsCode, DrugsName, MnemonicCode,
+	          DrugsFormat,DrugsPrice,DrugsTypeID,
+	          DrugsDosageID,DrugsUnit,Manufacturer,
+	          CreationDate)
+		VALUES
+		<foreach collection ="list" item="reddemCode" index= "index" separator =",">
+		(
+			#{reddemCode.DrugsCode}, #{reddemCode.DrugsName},#{reddemCode.MnemonicCode}, 
+			#{reddemCode.Format},#{reddemCode.Price},#{reddemCode.DrugsType}, 
+	        #{reddemCode.Dosage},#{reddemCode.Unit}, #{reddemCode.Manufacturer},
+	        now()
+		)
+		</foreach >
+	</insert >
+	
+	<!-- 分页显示药品信息 -->
+     <select id="getDrugList" resultType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM Drugs
+        WHERE DelMark = 1
+        <if test="keywords!=null and keywords!='' ">
+			AND MnemonicCode LIKE concat('%',#{keywords},'%')
+        </if> 
+        ORDER BY LastUpdateDate DESC,CreationDate DESC,ID ASC 
+        LIMIT #{start},#{count};
+    </select>
+     <select id="getDrugCount" resultType="int">
+        SELECT count(*) FROM Drugs
+        WHERE DelMark = 1
+        <if test="keywords!=null and keywords!='' ">
+        	AND MnemonicCode LIKE concat('%',#{keywords},'%')
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.DisecategoryMapper">
+  <sql id="Base_Column_List">   
+    ID, DicaCode, DicaName, SequenceNo, DicaType, DelMark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from DiseCategory
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">    
+    delete from DiseCategory
+    where ID = #{ID,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">    
+    insert into DiseCategory (ID, DicaCode, DicaName, 
+      SequenceNo, DicaType, DelMark
+      )
+    values (#{ID,jdbcType=INTEGER}, #{dicaCode,jdbcType=VARCHAR}, #{dicaName,jdbcType=VARCHAR}, 
+      #{sequenceNo,jdbcType=INTEGER}, #{dicaType,jdbcType=INTEGER}, #{delMark,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">    
+    insert into DiseCategory
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="dicaCode != null">
+        DicaCode,
+      </if>
+      <if test="dicaName != null">
+        DicaName,
+      </if>
+      <if test="sequenceNo != null">
+        SequenceNo,
+      </if>
+      <if test="dicaType != null">
+        DicaType,
+      </if>
+      <if test="delMark != null">
+        DelMark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="dicaCode != null">
+        #{dicaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dicaName != null">
+        #{dicaName,jdbcType=VARCHAR},
+      </if>
+      <if test="sequenceNo != null">
+        #{sequenceNo,jdbcType=INTEGER},
+      </if>
+      <if test="dicaType != null">
+        #{dicaType,jdbcType=INTEGER},
+      </if>
+      <if test="delMark != null">
+        #{delMark,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">    
+    update DiseCategory
+    <set>
+      <if test="dicaCode != null">
+        DicaCode = #{dicaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dicaName != null">
+        DicaName = #{dicaName,jdbcType=VARCHAR},
+      </if>
+      <if test="sequenceNo != null">
+        SequenceNo = #{sequenceNo,jdbcType=INTEGER},
+      </if>
+      <if test="dicaType != null">
+        DicaType = #{dicaType,jdbcType=INTEGER},
+      </if>
+      <if test="delMark != null">
+        DelMark = #{delMark,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">   
+    update DiseCategory
+    set DicaCode = #{dicaCode,jdbcType=VARCHAR},
+      DicaName = #{dicaName,jdbcType=VARCHAR},
+      SequenceNo = #{sequenceNo,jdbcType=INTEGER},
+      DicaType = #{dicaType,jdbcType=INTEGER},
+      DelMark = #{delMark,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  
+   <!-- ConstantTypeCode ConstantTypeCode,ConstantTypeName ConstantTypeName -->
+     <select id="getDiseCategoryList" resultType="java.util.Map">
+        SELECT *
+        FROM DiseCategory
+        WHERE 1=1
+        
+        <if test="keywords!=null">
+            AND DicaCode LIKE concat('%',#{keywords},'%')
+        </if>
+        
+         <if test="keywords!=null">
+            OR DicaName LIKE concat('%',#{keywords},'%')
+        </if>
+        ORDER BY SequenceNo limit #{start},#{count};
+    </select>
+    
+     <select id="getDiseCategoryCount" resultType="int">
+        SELECT count(*) FROM DiseCategory
+        <where>
+            
+        <if test="keywords!=null">
+                AND DicaCode LIKE concat('%',#{keywords},'%')
+        </if>
+        
+        <if test="keywords!=null">
+                OR DicaName LIKE concat('%',#{keywords},'%')
+        </if>
+        </where>
+    </select>
+    
+    <delete id="deleteDiseCategoryByIds">
+        DELETE FROM DiseCategory WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteDiseCategoryByIds2">
+        UPDATE DiseCategory SET DelMark=0 WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateDiseCategoryById" parameterType="java.util.Map">
+        UPDATE DiseCategory SET DicaCode=#{DicaCode},
+        DicaName=#{DicaName},
+        SequenceNo=#{SequenceNo}
+        WHERE id=#{id}
+    </update>
+    
+    <insert id="addDiseCategory" parameterType="java.util.Map">
+        INSERT INTO DiseCategory SET DicaCode=#{DicaCode},
+        DicaName=#{DicaName},
+        SequenceNo=#{SequenceNo},
+        DicaType=1
+    </insert>
+</mapper>

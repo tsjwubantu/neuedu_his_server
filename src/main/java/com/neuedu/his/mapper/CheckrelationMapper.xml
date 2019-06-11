@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.CheckrelationMapper">
+  <sql id="Base_Column_List">    
+    ID, CheckProjID, CheckTempID, Position
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from CheckRelation
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" >
+    delete from CheckRelation
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  <insert id="insert" parameterType="java.util.Map">  
+    insert into CheckRelation (ID, CheckProjID, CheckTempID, 
+      Position)
+    values (#{ID,jdbcType=INTEGER}, #{CheckProjID,jdbcType=INTEGER}, #{CheckTempID,jdbcType=INTEGER}, 
+      #{Position,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="java.util.Map">    
+    insert into CheckRelation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="CheckProjID != null">
+        CheckProjID,
+      </if>
+      <if test="CheckTempID != null">
+        CheckTempID,
+      </if>
+      <if test="Position != null">
+        Position,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="CheckProjID != null">
+        #{CheckProjID,jdbcType=INTEGER},
+      </if>
+      <if test="CheckTempID != null">
+        #{CheckTempID,jdbcType=INTEGER},
+      </if>
+      <if test="Position != null">
+        #{Position,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">   
+    update CheckRelation
+    <set>
+      <if test="CheckProjID != null">
+        CheckProjID = #{CheckProjID,jdbcType=INTEGER},
+      </if>
+      <if test="CheckTempID != null">
+        CheckTempID = #{CheckTempID,jdbcType=INTEGER},
+      </if>
+      <if test="Position != null">
+        Position = #{Position,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">    
+    update CheckRelation
+    set CheckProjID = #{CheckProjID,jdbcType=INTEGER},
+      CheckTempID = #{CheckTempID,jdbcType=INTEGER},
+      Position = #{Position,jdbcType=VARCHAR}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <!-- getTemplateChecksList -->
+  <sql id="Table_Column_List">    
+    r.ID ID, r.CheckProjID CheckProjID, r.CheckTempID CheckTempID, r.Position Position,
+    f.ItemCode ItemCode,f.ItemName ItemName,f.Format Format
+  </sql>
+  <select id="getTemplateChecksList" parameterType="java.lang.Integer" resultType="java.util.Map">    
+    select 
+    <include refid="Table_Column_List" />
+    from CheckRelation r,Fmeditem f
+    where r.CheckProjID = f.ID
+    	AND CheckTempID = #{CheckTempID,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteTemplateChecksByTempsd" >
+    delete from CheckRelation
+    where CheckTempID = #{CheckTempID}	
+  </delete>
+</mapper>

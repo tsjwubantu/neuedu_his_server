@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.ExpenseclassMapper">
+  
+   <!-- ConstantTypeCode ConstantTypeCode,ConstantTypeName ConstantTypeName -->
+     <select id="getExpenseClassList" resultType="java.util.Map">
+        SELECT *
+        FROM ExpenseClass
+        WHERE 1=1
+        
+        <if test="keywords!=null">
+            AND ExpCode LIKE concat('%',#{keywords},'%')
+        </if>
+        
+         <if test="keywords!=null">
+            OR ExpName LIKE concat('%',#{keywords},'%')
+        </if>
+        ORDER BY id DESC limit #{start},#{count};
+    </select>
+    
+     <select id="getExpenseClassCount" resultType="int">
+        SELECT count(*) FROM ExpenseClass
+        <where>
+            
+        <if test="keywords!=null">
+                AND ExpCode LIKE concat('%',#{keywords},'%')
+        </if>
+        
+        <if test="keywords!=null">
+                OR ExpName LIKE concat('%',#{keywords},'%')
+        </if>
+        </where>
+    </select>
+    
+    <delete id="deleteExpenseClassByIds">
+        DELETE FROM ExpenseClass WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteExpenseClassByIds2">
+        UPDATE ExpenseClass SET DelMark=0 WHERE id IN
+        <foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateExpenseClassById" parameterType="java.util.Map">
+        UPDATE ExpenseClass SET ExpCode=#{ExpCode},
+        ExpName=#{ExpName}
+        WHERE ID=#{ID}
+    </update>
+    
+    <insert id="addExpenseClass" parameterType="java.util.Map">
+        INSERT INTO ExpenseClass SET ExpCode=#{ExpCode},
+        ExpName=#{ExpName}
+    </insert>
+  
+  <!-- 以下李用 以下李用以下李用以下李用以下李用以下李用以下李用以下李用以下李用以下李用-->
+  <sql id="Base_Column_List">    
+    ID, ExpCode, ExpName, DelMark
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from ExpenseClass
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+    
+  <delete id="deleteByPrimaryKey">
+    delete from ExpenseClass
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">
+    insert into ExpenseClass (ID, ExpCode, ExpName, 
+      DelMark)
+    values (#{ID,jdbcType=INTEGER}, #{expCode,jdbcType=VARCHAR}, #{expName,jdbcType=VARCHAR}, 
+      #{delMark,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">
+    insert into ExpenseClass
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="expCode != null">
+        ExpCode,
+      </if>
+      <if test="expName != null">
+        ExpName,
+      </if>
+      <if test="delMark != null">
+        DelMark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="expCode != null">
+        #{expCode,jdbcType=VARCHAR},
+      </if>
+      <if test="expName != null">
+        #{expName,jdbcType=VARCHAR},
+      </if>
+      <if test="delMark != null">
+        #{delMark,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+    update ExpenseClass
+    <set>
+      <if test="expCode != null">
+        ExpCode = #{expCode,jdbcType=VARCHAR},
+      </if>
+      <if test="expName != null">
+        ExpName = #{expName,jdbcType=VARCHAR},
+      </if>
+      <if test="delMark != null">
+        DelMark = #{delMark,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update ExpenseClass
+    set ExpCode = #{expCode,jdbcType=VARCHAR},
+      ExpName = #{expName,jdbcType=VARCHAR},
+      DelMark = #{delMark,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+</mapper>

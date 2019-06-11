@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.his.mapper.RegisterMapper">
+  <sql id="Base_Column_List">    
+    ID, CaseNumber, RealName, Gender, IDnumber, BirthDate, Age, AgeType, HomeAddress, 
+    VisitDate, Noon, DeptID, UserID, RegistLeID, SettleID, IsBook, RegistTime, RegisterID, 
+    VisitState
+  </sql>
+    
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from Register
+    where ID = #{ID,jdbcType=INTEGER}
+  </select>
+    
+  <delete id="deleteByPrimaryKey" >    
+    delete from Register
+    where ID in
+	<foreach collection="ids" separator="," open="(" close=")" item="id">
+            #{id}
+	</foreach>
+  </delete>  
+  
+  <insert id="insertSelective" parameterType="java.util.Map">    
+    insert into Register
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        ID,
+      </if>
+      <if test="caseNumber != null">
+        CaseNumber,
+      </if>
+      <if test="realName != null">
+        RealName,
+      </if>
+      <if test="gender != null">
+        Gender,
+      </if>
+      <if test="IDnumber != null">
+        IDnumber,
+      </if>
+      <if test="birthDate != null">
+        BirthDate,
+      </if>
+      <if test="age != null">
+        Age,
+      </if>
+      <if test="ageType != null">
+        AgeType,
+      </if>
+      <if test="homeAddress != null">
+        HomeAddress,
+      </if>
+      <if test="visitDate != null">
+        VisitDate,
+      </if>
+      <if test="noon != null">
+        Noon,
+      </if>
+      <if test="deptID != null">
+        DeptID,
+      </if>
+      <if test="userID != null">
+        UserID,
+      </if>
+      <if test="registLeID != null">
+        RegistLeID,
+      </if>
+      <if test="settleID != null">
+        SettleID,
+      </if>
+      <if test="isBook != null">
+        IsBook,
+      </if>
+      <if test="registTime != null">
+        RegistTime,
+      </if>
+      <if test="registerID != null">
+        RegisterID,
+      </if>
+      <if test="visitState != null">
+        VisitState,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ID != null">
+        #{ID,jdbcType=INTEGER},
+      </if>
+      <if test="caseNumber != null">
+        #{caseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="IDnumber != null">
+        #{IDnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="birthDate != null">
+        #{birthDate,jdbcType=DATE},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="ageType != null">
+        #{ageType,jdbcType=CHAR},
+      </if>
+      <if test="homeAddress != null">
+        #{homeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="visitDate != null">
+        #{visitDate,jdbcType=DATE},
+      </if>
+      <if test="noon != null">
+        #{noon,jdbcType=CHAR},
+      </if>
+      <if test="deptID != null">
+        #{deptID,jdbcType=INTEGER},
+      </if>
+      <if test="userID != null">
+        #{userID,jdbcType=INTEGER},
+      </if>
+      <if test="registLeID != null">
+        #{registLeID,jdbcType=INTEGER},
+      </if>
+      <if test="settleID != null">
+        #{settleID,jdbcType=INTEGER},
+      </if>
+      <if test="isBook != null">
+        #{isBook,jdbcType=CHAR},
+      </if>
+      <if test="registTime != null">
+        #{registTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registerID != null">
+        #{registerID,jdbcType=INTEGER},
+      </if>
+      <if test="visitState != null">
+        #{visitState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">    
+    update Register
+    <set>
+      <if test="CaseNumber != null">
+        CaseNumber = #{CaseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="RealName != null">
+        RealName = #{RealName,jdbcType=VARCHAR},
+      </if>
+      <if test="Gender != null">
+        Gender = #{Gender,jdbcType=INTEGER},
+      </if>
+      <if test="IDnumber != null">
+        IDnumber = #{IDnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="BirthDate != null">
+        BirthDate = #{BirthDate,jdbcType=DATE},
+      </if>
+      <if test="Age != null">
+        Age = #{Age,jdbcType=INTEGER},
+      </if>
+      <if test="AgeType != null">
+        AgeType = #{AgeType,jdbcType=CHAR},
+      </if>
+      <if test="HomeAddress != null">
+        HomeAddress = #{HomeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="VisitDate != null">
+        VisitDate = #{VisitDate,jdbcType=DATE},
+      </if>
+      <if test="Noon != null">
+        Noon = #{Noon,jdbcType=CHAR},
+      </if>
+      <if test="DeptID != null">
+        DeptID = #{DeptID,jdbcType=INTEGER},
+      </if>
+      <if test="UserID != null">
+        UserID = #{UserID,jdbcType=INTEGER},
+      </if>
+      <if test="RegistLeID != null">
+        RegistLeID = #{RegistLeID,jdbcType=INTEGER},
+      </if>
+      <if test="SettleID != null">
+        SettleID = #{SettleID,jdbcType=INTEGER},
+      </if>
+      <if test="IsBook != null">
+        IsBook = #{IsBook,jdbcType=CHAR},
+      </if>
+      <if test="RegistTime != null">
+        RegistTime = #{RegistTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="RegisterID != null">
+        RegisterID = #{RegisterID,jdbcType=INTEGER},
+      </if>
+      <if test="VisitState != null">
+        VisitState = #{VisitState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">    
+    update Register
+    set CaseNumber = #{caseNumber,jdbcType=VARCHAR},
+      RealName = #{realName,jdbcType=VARCHAR},
+      Gender = #{gender,jdbcType=INTEGER},
+      IDnumber = #{IDnumber,jdbcType=VARCHAR},
+      BirthDate = #{birthDate,jdbcType=DATE},
+      Age = #{age,jdbcType=INTEGER},
+      AgeType = #{ageType,jdbcType=CHAR},
+      HomeAddress = #{homeAddress,jdbcType=VARCHAR},
+      VisitDate = #{visitDate,jdbcType=DATE},
+      Noon = #{noon,jdbcType=CHAR},
+      DeptID = #{deptID,jdbcType=INTEGER},
+      UserID = #{userID,jdbcType=INTEGER},
+      RegistLeID = #{registLeID,jdbcType=INTEGER},
+      SettleID = #{settleID,jdbcType=INTEGER},
+      IsBook = #{isBook,jdbcType=CHAR},
+      RegistTime = #{registTime,jdbcType=TIMESTAMP},
+      RegisterID = #{registerID,jdbcType=INTEGER},
+      VisitState = #{visitState,jdbcType=INTEGER}
+    where ID = #{ID,jdbcType=INTEGER}
+  </update>
+  
+  <!-- li -->
+  <select id="getStateRegistersByDoc" resultType="java.util.Map">    
+    select 
+    <include refid="Base_Column_List" />
+    from Register
+    <where>
+    	<if test="UserID != null and UserID != ''">
+    	  AND UserID = #{ UserID }
+    	</if>
+    	<if test="VisitState != null and VisitState != ''">
+    	  AND VisitState = #{ VisitState }
+    	</if>
+    </where>
+  </select>
+  
+  <!-- gao -->
+   <!-- 按病例号查询 -->
+     <select id="getRegByCase" resultType="com.neuedu.his.bean.Register">
+        SELECT * FROM Register
+        WHERE CaseNumber=#{CaseNumber} limit 0,1;
+     </select>
+     
+     <!-- 找最大的病历号 -->
+     <select id="getRegisterBean" resultType="com.neuedu.his.bean.Register">
+        SELECT IF(CaseNumber='NaN',0,CaseNumber) CaseNumber FROM Register
+        ORDER BY CaseNumber DESC LIMIT 0,1;
+     </select>
+     
+     <!--取Register表的最大ID号-->
+     <select id="getMaxRegId" resultType="int">
+        SELECT max(ID) FROM Register;
+     </select>
+
+     <!-- 退号时查询用  -->
+     <select id="getRegisterList" resultType="java.util.Map">
+         SELECT a.CaseNumber,a.RealName,a.IDnumber,a.VisitDate,a.ID,a.RegisterID,
+                a.VisitState,g.InvoiceNum,g.Money,g.RegistID,d.DeptName,g.ID invID
+                ,g.FeeType,a.DeptID,DATE_FORMAT(p.Createtime,'%Y-%m-%d %H:%i:%s') Createteime
+                ,p.CreateOperID,p.ID pid   
+         FROM  Register a,Invoice g,Department d,PatientCosts p
+         WHERE  a.ID=g.RegistID AND a.DeptID =d.ID AND 1=1 AND p.RegistID=a.ID 
+                AND p.RegistID = a.ID AND p.Name = '挂号费' 
+                AND p.InvoiceID=g.ID AND g.Money &gt; 0 
+        
+         <if test="keywords!=null and keywords!='' ">
+            AND a.CaseNumber = #{keywords}
+         </if>
+         ORDER BY a.VisitDate DESC limit #{start},#{count};
+     </select>
+    
+     <!-- 按条件统计记录数量  确定页数最大值时用的  -->
+     <select id="getRegisterCount" resultType="int">
+        SELECT count(*) FROM Register
+        <where>
+        <if test="keywords!=null and keywords!='' ">
+            AND CaseNumber LIKE concat('%',#{keywords},'%')
+        </if>
+        <if test="keywords2!=null and keywords2!='' ">
+            AND RealName LIKE concat('%',#{keywords2},'%')
+        </if>
+        </where>
+    </select>
+    
+    <!--  已挂号数量统计    按照日期  午别 医生 统计   VisitState &lt;&gt; 4  -->
+    <select id="getAlreadyRegisterCount" resultType="int">
+        SELECT  COUNT(*)
+        FROM Register 
+        WHERE VisitState &lt;&gt; #{state} AND 1=1
+        
+        <if test="keywords!=null and keywords!='' ">
+            AND VisitDate =#{keywords}
+        </if>
+        <if test="keywords2!=null and keywords2!='' ">
+            AND Noon =#{keywords2}
+        </if>
+        <if test="keywords3!=null and keywords3!='' ">
+            AND UserID =#{keywords3}
+        </if>
+    </select>
+    
+    <!-- 只更新挂号信息的状态字段  退号模块使用-->
+    <update id="updateRegisterStateById" parameterType="java.util.Map">
+        UPDATE Register SET VisitState=#{State}
+        WHERE ID=#{ID}
+    </update>
+    
+    <!-- 插入挂号信息对象   BaseMapper里定义的-->
+    <insert id="insert" parameterType="java.util.Map">
+        INSERT INTO Register SET RealName=#{RealName},
+        Gender=#{Gender},
+        IDnumber=#{IDnumber},
+        BirthDate=#{BirthDate},
+        Age=#{Age},
+        AgeType=#{AgeType},
+        HomeAddress=#{HomeAddress},
+        CaseNumber=#{CaseNumber},
+        VisitDate=#{VisitDate},
+        Noon=#{Noon},
+        DeptID=#{DeptID},
+        UserID=#{UserID},
+        RegistLeID=#{RegistLeID},
+        SettleID=#{SettleID},
+        IsBook=#{IsBook},
+        RegistTime=#{RegistTime},
+        RegisterID=#{RegisterID},
+        VisitState=#{VisitState}
+    </insert>
+</mapper>
